@@ -1,0 +1,1116 @@
+/* ============================================================
+   mpesa-pending.css
+   Egerton AgriBridge Hub - mpesaPending.jsp
+
+   Matches customer portal design:
+   - Desktop: sidebar + status workspace.
+   - Phone: compact status view + fixed summary.
+   ============================================================ */
+
+.mpesa-pending-body {
+    background: #f7f5ed;
+    color: #0a2f18;
+    min-height: 100vh;
+}
+
+.mpesa-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 238px minmax(0, 1fr);
+}
+
+/* Sidebar */
+.mpesa-sidebar {
+    background: #fffdf6;
+    border-right: 1px solid #eee8d8;
+    padding: 26px 18px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.mpesa-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.mpesa-brand-mark {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #e6f7ea;
+    font-size: 19px;
+}
+
+.mpesa-brand h2 {
+    color: #004d22;
+    font-size: 25px;
+    line-height: 1;
+    letter-spacing: -0.8px;
+}
+
+.mpesa-brand p {
+    color: #5f675f;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2.2px;
+}
+
+.mpesa-menu {
+    display: grid;
+    gap: 8px;
+}
+
+.mpesa-menu a {
+    color: #24382d;
+    text-decoration: none;
+    border-radius: 14px;
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 850;
+    transition: 0.2s ease;
+}
+
+.mpesa-menu a span {
+    width: 22px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.mpesa-menu a:hover,
+.mpesa-menu a.active {
+    background: #eef5e9;
+    color: #004d22;
+}
+
+.mpesa-menu a.active {
+    box-shadow: inset 4px 0 0 #0b7a32;
+}
+
+.mpesa-sidebar-promo {
+    margin-top: 34px;
+    padding: 18px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #eef5e9, #fffaf0);
+    border: 1px solid #eee8d8;
+}
+
+.mpesa-sidebar-promo h3 {
+    color: #004d22;
+    font-size: 19px;
+    line-height: 1.18;
+}
+
+.mpesa-sidebar-promo p {
+    margin-top: 10px;
+    color: #52665a;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.mpesa-sidebar-promo a {
+    margin-top: 16px;
+    display: block;
+    background: #004d22;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.mpesa-sidebar-bottom {
+    margin-top: 30px;
+}
+
+.mpesa-sidebar-bottom a {
+    color: #b91c1c;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+/* Top bars */
+.mpesa-main {
+    min-width: 0;
+}
+
+.mpesa-mobile-topbar {
+    display: none;
+}
+
+.mpesa-topbar {
+    min-height: 74px;
+    background: #fffdf6;
+    border-bottom: 1px solid #eee8d8;
+    padding: 15px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.mpesa-topbar h1 {
+    color: #0a2f18;
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.mpesa-topbar p {
+    color: #5f675f;
+    margin-top: 3px;
+    font-size: 14px;
+}
+
+.mpesa-topbar strong {
+    color: #004d22;
+}
+
+.mpesa-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mpesa-top-btn {
+    background: #004d22;
+    color: white;
+    text-decoration: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.mpesa-icon-btn,
+.mpesa-profile-btn {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #004d22;
+    background: #ffffff;
+    border: 1px solid #e8eadf;
+    font-size: 19px;
+}
+
+.mpesa-profile-btn {
+    background: #ffcc55;
+    border-color: #ffcc55;
+}
+
+/* Content */
+.mpesa-content {
+    width: min(100% - 48px, 1220px);
+    margin: 26px auto 42px;
+}
+
+.mpesa-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 16px;
+    color: #6a6f68;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.3px;
+}
+
+.mpesa-breadcrumb a {
+    color: #004d22;
+    text-decoration: none;
+}
+
+/* Hero */
+.mpesa-hero-card {
+    background: linear-gradient(135deg, #00642e, #008b3f);
+    color: white;
+    border-radius: 24px;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 24px;
+    align-items: center;
+    box-shadow: 0 18px 38px rgba(0, 77, 34, 0.15);
+}
+
+.mpesa-hero-card.success {
+    background: linear-gradient(135deg, #007a35, #0baa4f);
+}
+
+.mpesa-hero-card.failed {
+    background: linear-gradient(135deg, #7f1d1d, #b91c1c);
+}
+
+.mpesa-eyebrow {
+    color: #eaffdf;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.mpesa-hero-card h2 {
+    color: white;
+    font-size: 34px;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+}
+
+.mpesa-hero-card p {
+    color: #f1fff1;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.mpesa-hero-badges {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.mpesa-hero-badges span {
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.20);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.mpesa-order-card {
+    background: rgba(0, 55, 25, 0.32);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.mpesa-order-card span,
+.mpesa-order-card small {
+    display: block;
+    color: #eaffdf;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+}
+
+.mpesa-order-card strong {
+    display: block;
+    color: white;
+    font-size: 34px;
+    line-height: 1;
+    margin: 8px 0 14px;
+}
+
+.mpesa-order-card b {
+    display: block;
+    color: white;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+/* Main card */
+.mpesa-main-card {
+    margin-top: 22px;
+    background: white;
+    border: 1px solid #eee8d8;
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.055);
+}
+
+.mpesa-card-grid {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 22px;
+    align-items: center;
+}
+
+/* Visual */
+.mpesa-visual-panel {
+    display: grid;
+    place-items: center;
+    gap: 18px;
+}
+
+.mpesa-animation-area {
+    height: 150px;
+    display: grid;
+    place-items: center;
+}
+
+.mpesa-spinner-wrap {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    display: grid;
+    place-items: center;
+}
+
+.mpesa-spinner-ring {
+    position: absolute;
+    inset: 0;
+    border: 8px solid #e6f7ea;
+    border-top-color: #0b7a32;
+    border-radius: 50%;
+    animation: mpesaSpin 1s linear infinite;
+}
+
+.mpesa-spinner-core {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background: #0b7a32;
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 32px;
+    font-weight: 900;
+}
+
+@keyframes mpesaSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.mpesa-success-animation,
+.mpesa-failed-animation {
+    display: none;
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+    font-weight: 900;
+}
+
+.mpesa-success-animation {
+    background: #e6f7ea;
+}
+
+.mpesa-success-check {
+    width: 44px;
+    height: 80px;
+    border-right: 12px solid #0b7a32;
+    border-bottom: 12px solid #0b7a32;
+    transform: rotate(45deg);
+    margin-top: -16px;
+}
+
+.mpesa-failed-animation {
+    background: #fff1f1;
+    color: #b91c1c;
+}
+
+.mpesa-phone-shell {
+    width: 220px;
+    background: #0a2f18;
+    border-radius: 28px;
+    padding: 10px;
+    box-shadow: 0 18px 38px rgba(0,0,0,0.16);
+}
+
+.mpesa-phone-notch {
+    width: 58px;
+    height: 6px;
+    background: #26382d;
+    border-radius: 999px;
+    margin: 0 auto 8px;
+}
+
+.mpesa-phone-screen {
+    min-height: 150px;
+    background: #f7fff5;
+    border-radius: 20px;
+    padding: 18px;
+    text-align: center;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+}
+
+.mpesa-phone-screen.success {
+    background: #e6f7ea;
+}
+
+.mpesa-phone-screen.failed {
+    background: #fff1f1;
+}
+
+.mpesa-phone-screen p {
+    color: #6a6f68;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.mpesa-phone-screen h3 {
+    color: #004d22;
+    font-size: 20px;
+}
+
+.mpesa-phone-screen span {
+    color: #0b7a32;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.fade-pulse {
+    animation: fadePulse 1.1s ease-in-out infinite;
+}
+
+@keyframes fadePulse {
+    50% {
+        opacity: 0.45;
+    }
+}
+
+/* Status panel */
+.mpesa-status-panel {
+    min-width: 0;
+}
+
+.mpesa-status-main h2 {
+    color: #0a2f18;
+    font-size: 25px;
+    margin-bottom: 7px;
+}
+
+.mpesa-status-main p {
+    color: #6a6f68;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.mpesa-meta-row {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.mpesa-meta-row div {
+    background: #f7f5ed;
+    border-radius: 14px;
+    padding: 13px;
+}
+
+.mpesa-meta-row span {
+    display: block;
+    color: #6a6f68;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.mpesa-meta-row strong {
+    color: #004d22;
+    font-size: 13px;
+}
+
+.mpesa-live-box {
+    margin-top: 16px;
+    background: #eef5e9;
+    border: 1px solid #dbe8d9;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.mpesa-live-box h3 {
+    color: #004d22;
+    font-size: 17px;
+}
+
+.mpesa-live-box p {
+    color: #52665a;
+    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.mpesa-live-box span {
+    display: block;
+    color: #6a6f68;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.status-success {
+    color: #0b7a32 !important;
+}
+
+.status-failed {
+    color: #b91c1c !important;
+}
+
+.mpesa-info-box {
+    margin-top: 14px;
+    background: #fff8e8;
+    color: #7c4a00;
+    border: 1px solid #f0ddb0;
+    padding: 13px;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.mpesa-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mpesa-actions a {
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.mpesa-primary-action {
+    background: #004d22;
+    color: white;
+}
+
+.mpesa-secondary-action {
+    background: #eef5e9;
+    color: #004d22;
+}
+
+.mpesa-warning-action {
+    background: #ffb020;
+    color: #3b2600;
+}
+
+/* Progress */
+.mpesa-progress-section {
+    margin-top: 22px;
+}
+
+.mpesa-section-title {
+    margin-bottom: 14px;
+}
+
+.mpesa-section-title h2 {
+    color: #0a2f18;
+    font-size: 20px;
+}
+
+.mpesa-section-title p {
+    color: #6a6f68;
+    margin-top: 4px;
+    font-size: 13px;
+}
+
+.mpesa-step-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.mpesa-step-card {
+    border-radius: 16px;
+    padding: 16px;
+    background: #f7f5ed;
+    border: 1px solid #eee8d8;
+}
+
+.mpesa-step-card.done {
+    background: #e6f7ea;
+    border-color: #c7e8cd;
+}
+
+.mpesa-step-card.active {
+    background: #fff8e8;
+    border-color: #f0ddb0;
+}
+
+.mpesa-step-card.failed {
+    background: #fff1f1;
+    border-color: #ffd0d0;
+}
+
+.mpesa-step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #dbe8d9;
+    color: #004d22;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.mpesa-step-card.done .mpesa-step-number {
+    background: #004d22;
+    color: white;
+}
+
+.mpesa-step-card.active .mpesa-step-number {
+    background: #ffb020;
+    color: #3b2600;
+}
+
+.mpesa-step-card.failed .mpesa-step-number {
+    background: #b91c1c;
+    color: white;
+}
+
+.mpesa-step-card h4 {
+    color: #0a2f18;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.mpesa-step-card p {
+    color: #6a6f68;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.mpesa-mobile-summary,
+.mpesa-bottom-nav {
+    display: none;
+}
+
+/* Tablet */
+@media (max-width: 1150px) {
+    .mpesa-shell {
+        grid-template-columns: 210px minmax(0, 1fr);
+    }
+
+    .mpesa-sidebar {
+        padding: 22px 14px;
+    }
+
+    .mpesa-brand h2 {
+        font-size: 21px;
+    }
+
+    .mpesa-menu a {
+        font-size: 12px;
+        padding: 12px;
+    }
+
+    .mpesa-sidebar-promo {
+        display: none;
+    }
+
+    .mpesa-content {
+        width: calc(100% - 34px);
+        margin-top: 20px;
+    }
+
+    .mpesa-hero-card {
+        grid-template-columns: 1fr;
+    }
+
+    .mpesa-card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Phone */
+@media (max-width: 760px) {
+    .mpesa-pending-body {
+        padding-bottom: 138px;
+    }
+
+    .mpesa-shell {
+        display: block;
+    }
+
+    .mpesa-sidebar {
+        display: none;
+    }
+
+    .mpesa-mobile-topbar {
+        height: 64px;
+        background: #fffdf6;
+        border-bottom: 1px solid #eee8d8;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: 42px 1fr auto;
+        align-items: center;
+        gap: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .mpesa-mobile-topbar strong {
+        color: #004d22;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .mpesa-mobile-topbar a {
+        color: #004d22;
+        text-decoration: none;
+        font-size: 22px;
+    }
+
+    .mpesa-mobile-topbar div {
+        display: flex;
+        gap: 10px;
+    }
+
+    .mpesa-topbar {
+        position: static;
+        min-height: auto;
+        padding: 16px 18px 10px;
+        display: block;
+        background: #f7f5ed;
+        border-bottom: none;
+    }
+
+    .mpesa-topbar h1 {
+        font-size: 20px;
+    }
+
+    .mpesa-topbar p {
+        font-size: 13px;
+    }
+
+    .mpesa-top-actions {
+        display: none;
+    }
+
+    .mpesa-content {
+        width: calc(100% - 28px);
+        margin: 0 auto 28px;
+    }
+
+    .mpesa-breadcrumb {
+        display: none;
+    }
+
+    .mpesa-hero-card {
+        border-radius: 18px;
+        padding: 18px;
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .mpesa-eyebrow {
+        display: none;
+    }
+
+    .mpesa-hero-card h2 {
+        font-size: 23px;
+    }
+
+    .mpesa-hero-card p {
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
+    .mpesa-hero-badges {
+        margin-top: 12px;
+    }
+
+    .mpesa-order-card {
+        display: none;
+    }
+
+    .mpesa-main-card {
+        margin-top: 14px;
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .mpesa-card-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .mpesa-animation-area {
+        height: 116px;
+    }
+
+    .mpesa-spinner-wrap {
+        width: 92px;
+        height: 92px;
+    }
+
+    .mpesa-spinner-ring {
+        border-width: 6px;
+    }
+
+    .mpesa-spinner-core {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+
+    .mpesa-success-animation,
+    .mpesa-failed-animation {
+        width: 90px;
+        height: 90px;
+        font-size: 56px;
+    }
+
+    .mpesa-success-check {
+        width: 34px;
+        height: 58px;
+        border-right-width: 10px;
+        border-bottom-width: 10px;
+    }
+
+    .mpesa-phone-shell {
+        width: 100%;
+        max-width: 210px;
+    }
+
+    .mpesa-phone-screen {
+        min-height: 120px;
+    }
+
+    .mpesa-status-main h2 {
+        font-size: 19px;
+    }
+
+    .mpesa-status-main p {
+        font-size: 12px;
+    }
+
+    .mpesa-meta-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .mpesa-live-box {
+        padding: 13px;
+        border-radius: 14px;
+    }
+
+    .mpesa-live-box h3 {
+        font-size: 15px;
+    }
+
+    .mpesa-live-box p,
+    .mpesa-info-box {
+        font-size: 11px;
+    }
+
+    .mpesa-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .mpesa-actions a {
+        text-align: center;
+    }
+
+    .mpesa-section-title h2 {
+        font-size: 17px;
+    }
+
+    .mpesa-section-title p {
+        display: none;
+    }
+
+    /* Phone-friendly Payment Progress layout.
+       The icon stays on the left while the title and description get full space. */
+    .mpesa-progress-section {
+        margin-top: 16px;
+    }
+
+    .mpesa-step-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .mpesa-step-card {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr);
+        column-gap: 12px;
+        row-gap: 2px;
+        align-items: start;
+        padding: 14px;
+        border-radius: 16px;
+        min-height: auto;
+    }
+
+    .mpesa-step-number {
+        grid-row: 1 / 3;
+        width: 38px;
+        height: 38px;
+        margin: 0;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+
+    .mpesa-step-card h4 {
+        font-size: 14px;
+        line-height: 1.25;
+        margin: 0 0 4px;
+        min-width: 0;
+    }
+
+    .mpesa-step-card p {
+        display: block;
+        font-size: 12px;
+        line-height: 1.45;
+        margin: 0;
+        max-width: 100%;
+        min-width: 0;
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+
+    .mpesa-mobile-summary {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: 78px;
+        height: 58px;
+        background: rgba(255, 253, 246, 0.98);
+        border: 1px solid #eee8d8;
+        border-radius: 18px;
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.12);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        z-index: 1200;
+        backdrop-filter: blur(14px);
+    }
+
+    .mpesa-mobile-summary span {
+        display: block;
+        color: #6a6f68;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .mpesa-mobile-summary strong {
+        color: #004d22;
+        font-size: 16px;
+    }
+
+    .mpesa-mobile-summary a {
+        background: #004d22;
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 900;
+        font-size: 12px;
+    }
+
+    .mpesa-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 68px;
+        background: rgba(255, 253, 246, 0.98);
+        border-top: 1px solid #eee8d8;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        z-index: 1200;
+        box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(14px);
+    }
+
+    .mpesa-bottom-nav a {
+        color: #5f675f;
+        text-decoration: none;
+        display: grid;
+        place-items: center;
+        gap: 2px;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 8px 0;
+    }
+
+    .mpesa-bottom-nav a span {
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .mpesa-bottom-nav a.active {
+        color: #004d22;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 390px) {
+    .mpesa-mobile-topbar strong {
+        font-size: 16px;
+    }
+
+    .mpesa-phone-shell {
+        display: none;
+    }
+
+    .mpesa-step-card p {
+        display: block;
+        font-size: 11px;
+        line-height: 1.35;
+    }
+
+    .mpesa-mobile-summary {
+        left: 8px;
+        right: 8px;
+    }
+}
+
+
+/* ============================================================
+   Final mobile fix for payment progress text wrapping
+   ============================================================ */
+@media (max-width: 760px) {
+    .mpesa-step-card {
+        grid-template-columns: 42px minmax(0, 1fr) !important;
+    }
+
+    .mpesa-step-number {
+        grid-row: 1 / 3;
+    }
+
+    .mpesa-step-card h4,
+    .mpesa-step-card p {
+        width: 100%;
+        min-width: 0;
+        word-break: normal;
+        overflow-wrap: normal;
+        white-space: normal;
+    }
+}

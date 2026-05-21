@@ -1,0 +1,14 @@
+/* ============================================================
+   responsive.css - optional global responsive rules
+
+   Most page-specific responsive rules already live inside each page CSS file.
+   This file has small global fixes only.
+   ============================================================ */
+
+@media (max-width: 768px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+}

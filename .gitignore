@@ -1,0 +1,38 @@
+# NetBeans
+/nbproject/private/
+/build/
+/dist/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# Maven build output
+/target/
+
+# Java compiled files
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+
+# Environment / secrets
+.env
+*.env
+application.properties
+config.properties
+
+# Database backups - optional
+*.sql
+*.dump
+*.bak

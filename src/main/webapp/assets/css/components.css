@@ -1,0 +1,347 @@
+/* ============================================================
+   components.css - reusable buttons, cards, badges, shared nav helpers
+   ============================================================ */
+
+/* =============================
+   Shared Components
+   ============================= */
+
+.navbar {
+    background: #1f5f3b;
+    color: white;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 18px;
+    font-weight: bold;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.container {
+    width: 90%;
+    margin: 30px auto;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+}
+
+.btn {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    background: #256428;
+}
+
+.btn-secondary {
+    background: #f4a261;
+}
+
+.btn-danger {
+    background: #d62828;
+}
+
+.stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.stat-card h3 {
+    color: #1f5f3b;
+    font-size: 28px;
+}
+
+.alert-badge {
+    background: #ffe5e5;
+    color: #b00020;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.product-badge {
+    position: absolute;
+    top: 28px;
+    left: 28px;
+    background: #ffb020;
+    color: #2d2100;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.auth-mini-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.auth-mini-badges span {
+    background: rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    padding: 9px 13px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.catalog-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #ffb020;
+    color: #2d2100;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.catalog-badge.warning {
+    background: #ffe5e5;
+    color: #b00020;
+}
+
+.success-badge {
+    background: #e6f7ea;
+    color: #0b7a32;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.out-stock-badge {
+    background: #eeeeee;
+    color: #555555;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.product-badge.low {
+    background: #ffd7ad;
+    color: #7c2d12;
+}
+
+.product-badge.out {
+    background: #eeeeee;
+    color: #555555;
+}
+
+.product-badge.in {
+    background: #ffb020;
+    color: #2d2100;
+}
+
+.detail-floating-badges {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    display: grid;
+    gap: 8px;
+}
+
+.detail-floating-badges span {
+    background: #0b7a32;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.detail-floating-badges span.gold {
+    background: #ffb020;
+    color: #2d2100;
+}
+
+.navbar a, .landing-links a, .market-nav-links a, .cart-nav-links a, .product-detail-links a {
+    position: relative;
+    padding: 6px 0;
+}
+
+.navbar a:hover {
+    color: #ffcc55;
+}
+
+.navbar a::after, .landing-links a::after, .market-nav-links a::after, .cart-nav-links a::after, .product-detail-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    transition: width 0.25s ease;
+}
+
+.navbar a::after {
+    background: #ffcc55;
+}
+
+.navbar a:hover::after, .landing-links a:hover::after, .market-nav-links a:hover::after, .cart-nav-links a:hover::after, .product-detail-links a:hover::after {
+    width: 100%;
+}
+
+.navbar a::before, .landing-links a::before, .market-nav-links a::before, .cart-nav-links a::before, .product-detail-links a::before {
+    content: "Open";
+    position: absolute;
+    left: 50%;
+    top: 105%;
+    transform: translateX(-50%) translateY(6px);
+    background: #003d1f;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.25s ease;
+    z-index: 999;
+}
+
+.navbar a:hover::before, .landing-links a:hover::before, .market-nav-links a:hover::before, .cart-nav-links a:hover::before, .product-detail-links a:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.navbar a[href*="index"]::before, .landing-links a[href*="index"]::before, .market-nav-links a[href*="index"]::before, .cart-nav-links a[href*="index"]::before, .product-detail-links a[href*="index"]::before {
+    content: "Home";
+}
+
+.navbar a[href*="products"]::before, .landing-links a[href*="products"]::before, .market-nav-links a[href*="products"]::before, .cart-nav-links a[href*="products"]::before, .product-detail-links a[href*="products"]::before {
+    content: "Marketplace";
+}
+
+.navbar a[href="#products"]::before, .landing-links a[href="#products"]::before {
+    content: "Products";
+}
+
+.navbar a[href*="process"]::before, .landing-links a[href*="process"]::before, .market-nav-links a[href*="process"]::before, .cart-nav-links a[href*="process"]::before, .product-detail-links a[href*="process"]::before {
+    content: "Process";
+}
+
+.navbar a[href*="heritage"]::before, .landing-links a[href*="heritage"]::before, .market-nav-links a[href*="heritage"]::before, .cart-nav-links a[href*="heritage"]::before, .product-detail-links a[href*="heritage"]::before {
+    content: "About";
+}
+
+.navbar a[href*="support"]::before, .landing-links a[href*="support"]::before, .market-nav-links a[href*="support"]::before, .cart-nav-links a[href*="support"]::before, .product-detail-links a[href*="support"]::before {
+    content: "Support";
+}
+
+.navbar a[href*="logout"]::before, .landing-links a[href*="logout"]::before, .market-nav-links a[href*="logout"]::before, .cart-nav-links a[href*="logout"]::before, .product-detail-links a[href*="logout"]::before {
+    content: "Logout";
+}
+
+.navbar a[href*="login"]::before, .landing-links a[href*="login"]::before, .market-nav-links a[href*="login"]::before, .cart-nav-links a[href*="login"]::before, .product-detail-links a[href*="login"]::before {
+    content: "Login";
+}
+
+.navbar a[href*="register"]::before, .landing-links a[href*="register"]::before, .market-nav-links a[href*="register"]::before, .cart-nav-links a[href*="register"]::before, .product-detail-links a[href*="register"]::before {
+    content: "Register";
+}
+
+.navbar a[href*="cart"]::before, .landing-links a[href*="cart"]::before, .market-nav-links a[href*="cart"]::before, .cart-nav-links a[href*="cart"]::before, .product-detail-links a[href*="cart"]::before {
+    content: "Cart";
+}
+
+.navbar a[href*="myOrders"]::before, .landing-links a[href*="myOrders"]::before, .market-nav-links a[href*="myOrders"]::before, .cart-nav-links a[href*="myOrders"]::before, .product-detail-links a[href*="myOrders"]::before {
+    content: "My Orders";
+}
+
+.navbar a[href*="adminDashboard"]::before {
+    content: "Dashboard";
+}
+
+.navbar a[href*="manageOrders"]::before {
+    content: "Orders";
+}
+
+.navbar a[href*="manageProducts"]::before {
+    content: "Manage Products";
+}
+
+.navbar a[href*="addProduct"]::before {
+    content: "Add Product";
+}
+
+.navbar a[href*="salesReport"]::before {
+    content: "Reports";
+}
+
+.navbar a[href*="delivery"]::before {
+    content: "Delivery";
+}
+
+.btn, .landing-btn, .market-cart-btn, .market-details-btn, .checkout-main-btn, .confirmation-pay-btn, .confirmation-secondary-btn, .featured-details-btn, .featured-cart-btn, .detail-add-btn, .detail-buy-btn {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.btn:hover, .landing-btn:hover, .market-cart-btn:hover, .checkout-main-btn:hover, .confirmation-pay-btn:hover, .featured-cart-btn:hover, .detail-add-btn:hover, .detail-buy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 77, 34, 0.20);
+}
+
+.customer-order-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.dashboard-logout-btn {
+    background: #fff1f1;
+    color: #b91c1c;
+    border: 1px solid #ffd0d0;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 900;
+    transition: 0.25s ease;
+    white-space: nowrap;
+}
+
+.dashboard-logout-btn:hover {
+    background: #b91c1c;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
+}

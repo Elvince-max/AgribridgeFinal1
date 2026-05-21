@@ -1,0 +1,68 @@
+/* ============================================================
+   base.css - global reset, variables, body, form/table defaults
+   ============================================================ */
+
+:root {
+    --agri-green: #004d22;
+    --agri-green-dark: #003818;
+    --agri-green-soft: #0b7a32;
+    --agri-cream: #fffaf0;
+    --agri-cream-2: #f7f1df;
+    --agri-gold: #ffb020;
+    --agri-brown: #8a4b12;
+    --agri-text: #12351f;
+    --agri-muted: #6b6255;
+    --agri-border: #eee8d8;
+}
+
+/* =============================
+   Base 
+   ============================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f5f7f2;
+    color: #1f2933;
+    overflow-x: hidden;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    background: #1f5f3b;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.hidden {
+    display: none !important;
+}
+
+html {
+    scroll-behavior: smooth;
+}
