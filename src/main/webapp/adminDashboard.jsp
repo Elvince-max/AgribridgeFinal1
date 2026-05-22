@@ -14,6 +14,7 @@
     int totalOrders = 0;
     int activeProducts = 0;
     int pendingDeliveries = 0;
+    int lowStockProducts = 0;
 
     Connection conn = null;
 
@@ -42,16 +43,18 @@
 
         } catch (Exception e) {
             // fallback: total all orders
-            String sql = "SELECT COALESCE(SUM(total_amount), 0) AS total_sales FROM orders";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            try {
+                String sql = "SELECT COALESCE(SUM(total_amount), 0) AS total_sales FROM orders";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                totalSales = rs.getDouble("total_sales");
-            }
+                if (rs.next()) {
+                    totalSales = rs.getDouble("total_sales");
+                }
 
-            rs.close();
-            ps.close();
+                rs.close();
+                ps.close();
+            } catch (Exception ignored) {}
         }
 
         // Total orders
@@ -97,6 +100,22 @@
             } catch (Exception ignored) {}
         }
 
+        // Low stock products
+        try {
+            String sql = "SELECT COUNT(*) AS low_stock_products FROM products WHERE stock_quantity <= 5";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                lowStockProducts = rs.getInt("low_stock_products");
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            lowStockProducts = 0;
+        }
+
         // Pending deliveries
         try {
             String sql =
@@ -127,21 +146,29 @@
     <title>Admin Dashboard - Egerton AgriBridge Hub</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style-backup.css?v=7">
+
+    <!-- CSS order matters -->
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/base.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/components.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/admin-dashboard.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/responsive.css?v=1">
 </head>
 
-<body class="estate-dashboard-body">
+<body class="admin-dashboard-body">
 
-<div class="estate-layout">
+<div class="admin-shell">
 
     <!-- SIDEBAR -->
-    <aside class="estate-sidebar">
-        <div class="estate-brand">
-            <h2>AgriBridge</h2>
-            <p>Modern Pastoral Management</p>
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <div class="admin-brand-mark">🌿</div>
+            <div>
+                <h2>AgriBridge</h2>
+                <p>Admin Portal</p>
+            </div>
         </div>
 
-        <nav class="estate-menu">
+        <nav class="admin-menu">
             <a href="adminDashboard.jsp" class="active">
                 <span>▦</span>
                 Dashboard
@@ -149,7 +176,7 @@
 
             <a href="manageProducts.jsp">
                 <span>▣</span>
-                Manage Products
+                Products
             </a>
 
             <a href="addProduct.jsp">
@@ -159,12 +186,12 @@
 
             <a href="manageOrders.jsp">
                 <span>▤</span>
-                Manage Orders
+                Orders
             </a>
 
             <a href="salesReport.jsp">
                 <span>▥</span>
-                Sales Reports
+                Reports
             </a>
 
             <a href="products.jsp">
@@ -173,265 +200,341 @@
             </a>
         </nav>
 
-                    <div class="estate-sidebar-bottom">
-                        <a class="estate-add-btn" href="addProduct.jsp">
-                            ＋ Add New Product
-                        </a>
+        <div class="admin-sidebar-promo">
+            <h3>Operations Hub</h3>
+            <p>Monitor orders, products, payments, and deliveries from one workspace.</p>
+            <a href="addProduct.jsp">Add Product</a>
+        </div>
 
-                        <a href="logout" class="estate-logout">
-                            ⎋ Logout
-                        </a>
-                    </div>
-                </aside>
+        <div class="admin-sidebar-bottom">
+            <a href="logout" onclick="return confirm('Are you sure you want to logout?');">
+                ⎋ Logout
+            </a>
+        </div>
+    </aside>
 
-                <!-- MAIN -->
-                <main class="estate-main">
+    <!-- MAIN -->
+    <main class="admin-main">
 
-                    <!-- TOP BAR -->
-                    <header class="estate-topbar">
-                        <div>
-                            <h1>Estate Overview</h1>
-                            <p>Welcome back. Here is today’s AgriBridge performance snapshot.</p>
-                        </div>
+        <!-- MOBILE TOP BAR -->
+        <header class="admin-mobile-topbar">
+            <a href="adminDashboard.jsp" aria-label="Dashboard">☰</a>
+            <strong>Admin</strong>
+            <div>
+                <a href="manageOrders.jsp" aria-label="Orders">📦</a>
+                <a href="addProduct.jsp" aria-label="Add Product">＋</a>
+            </div>
+        </header>
 
-                        <div class="estate-top-actions">
-                <form action="manageOrders.jsp" method="get" class="estate-search">
+        <!-- DESKTOP TOP BAR -->
+        <header class="admin-topbar">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Welcome back. Here is today’s AgriBridge performance snapshot.</p>
+            </div>
+
+            <div class="admin-top-actions">
+                <form action="manageOrders.jsp" method="get" class="admin-search">
                     <span>⌕</span>
                     <input type="text" name="search" placeholder="Search order ID...">
                 </form>
 
                 <a href="manageOrders.jsp?orderStatus=PENDING"
-                   class="estate-icon-btn"
+                   class="admin-icon-btn"
                    title="Pending Orders">
                     🔔
                 </a>
 
                 <a href="adminDashboard.jsp"
-                   class="estate-profile"
+                   class="admin-profile"
                    title="Admin Dashboard">
                     👨‍💼
-                </a>
-
-                <a href="logout"
-                   class="dashboard-logout-btn"
-                   onclick="return confirm('Are you sure you want to logout?');">
-                    Logout
                 </a>
             </div>
         </header>
 
-        <!-- STATS -->
-        <section class="estate-stats-grid">
+        <div class="admin-content">
 
-            <div class="estate-stat-card">
-                <div class="estate-stat-icon green">💵</div>
-                <p>Total Sales</p>
-                <h2>KES <%= String.format("%,.2f", totalSales) %></h2>
-                <small class="positive">↗ Revenue from completed orders</small>
-            </div>
-
-            <div class="estate-stat-card">
-                <div class="estate-stat-icon gold">🧺</div>
-                <p>Total Orders</p>
-                <h2><%= totalOrders %></h2>
-                <small>↻ Updated from orders table</small>
-            </div>
-
-            <div class="estate-stat-card">
-                <div class="estate-stat-icon green">▣</div>
-                <p>Active Products</p>
-                <h2><%= activeProducts %></h2>
-                <small class="positive">● Marketplace inventory</small>
-            </div>
-
-            <div class="estate-stat-card">
-                <div class="estate-stat-icon red">🚚</div>
-                <p>Pending Deliveries</p>
-                <h2><%= pendingDeliveries %></h2>
-                <small class="warning">! Action may be required</small>
-            </div>
-
-        </section>
-
-        <!-- MIDDLE -->
-        <section class="estate-middle-grid">
-
-            <div class="estate-analytics-card">
-                <div class="estate-card-header">
-                    <div>
-                        <h2>Revenue Analytics</h2>
-                        <p>Visual performance overview</p>
-                    </div>
-
-                    <span>MONTHLY</span>
-                </div>
-
-                <div class="estate-chart">
-                    <div style="height: 32%;"></div>
-                    <div style="height: 48%;"></div>
-                    <div class="highlight-gold" style="height: 62%;"></div>
-                    <div style="height: 55%;"></div>
-                    <div style="height: 75%;"></div>
-                    <div style="height: 40%;"></div>
-                    <div class="highlight-green" style="height: 84%;"></div>
-                    <div style="height: 62%;"></div>
-                    <div style="height: 44%;"></div>
-                    <div style="height: 58%;"></div>
-                </div>
-
-                <div class="estate-chart-labels">
-                    <span>Week 1</span>
-                    <span>Week 2</span>
-                    <span>Week 3</span>
-                    <span>Week 4</span>
-                </div>
-            </div>
-
-            <div class="estate-excellence-card">
-                <h2>Pastoral Excellence</h2>
-                <p>Your AgriBridge hub is operating with strong performance and traceability.</p>
-
-                <div class="estate-progress-row">
-                    <div>
-                        <span>Order Processing</span>
-                        <strong>92%</strong>
-                    </div>
-                    <div class="estate-progress-bar">
-                        <span style="width: 92%;"></span>
-                    </div>
-                </div>
-
-                <div class="estate-progress-row">
-                    <div>
-                        <span>Logistics Efficiency</span>
-                        <strong>78%</strong>
-                    </div>
-                    <div class="estate-progress-bar soft">
-                        <span style="width: 78%;"></span>
-                    </div>
-                </div>
-
-                <a href="salesReport.jsp">View Full Report</a>
-            </div>
-
-        </section>
-
-        <!-- RECENT ORDERS -->
-        <section class="estate-recent-card">
-
-            <div class="estate-card-header">
+            <!-- HERO -->
+            <section class="admin-hero-card">
                 <div>
-                    <h2>Recent Orders</h2>
-                    <p>Latest customer activity</p>
+                    <p class="admin-eyebrow">OPERATIONS OVERVIEW</p>
+                    <h2>AgriBridge Control Center</h2>
+                    <p>
+                        Track sales, products, orders, delivery workload, and recent customer activity
+                        from a single admin workspace.
+                    </p>
+
+                    <div class="admin-hero-actions">
+                        <a href="manageOrders.jsp">Manage Orders</a>
+                        <a href="addProduct.jsp">Add Product</a>
+                    </div>
                 </div>
 
-                <a href="manageOrders.jsp">View All</a>
-            </div>
+                <div class="admin-hero-summary">
+                    <span>Total Sales</span>
+                    <strong>KES <%= String.format("%,.2f", totalSales) %></strong>
+                    <small>Paid / completed orders</small>
+                </div>
+            </section>
 
-            <div class="estate-orders-table">
+            <!-- STATS -->
+            <section class="admin-stats-grid">
 
-                <div class="estate-orders-head">
-                    <span>Order ID</span>
-                    <span>Customer</span>
-                    <span>Delivery</span>
-                    <span>Amount</span>
-                    <span>Status</span>
+                <div class="admin-stat-card">
+                    <div>💵</div>
+                    <span>Total Sales</span>
+                    <h3>KES <%= String.format("%,.2f", totalSales) %></h3>
+                    <p>Revenue from completed payments</p>
                 </div>
 
-                <%
-                    PreparedStatement recentPs = null;
-                    ResultSet recentRs = null;
-                    boolean hasRecentOrders = false;
+                <div class="admin-stat-card">
+                    <div>🧺</div>
+                    <span>Total Orders</span>
+                    <h3><%= totalOrders %></h3>
+                    <p>All customer orders</p>
+                </div>
 
-                    try {
-                        if (conn == null || conn.isClosed()) {
-                            conn = DBConnection.getConnection();
-                        }
+                <div class="admin-stat-card">
+                    <div>▣</div>
+                    <span>Active Products</span>
+                    <h3><%= activeProducts %></h3>
+                    <p>Visible marketplace inventory</p>
+                </div>
 
-                        String recentSql =
-                            "SELECT order_id, user_id, total_amount, order_status, delivery_zone " +
-                            "FROM orders " +
-                            "ORDER BY order_id DESC LIMIT 5";
+                <div class="admin-stat-card warning">
+                    <div>🚚</div>
+                    <span>Pending Deliveries</span>
+                    <h3><%= pendingDeliveries %></h3>
+                    <p>Orders needing fulfilment</p>
+                </div>
 
-                        recentPs = conn.prepareStatement(recentSql);
-                        recentRs = recentPs.executeQuery();
+            </section>
 
-                        while (recentRs.next()) {
-                            hasRecentOrders = true;
+            <!-- MIDDLE -->
+            <section class="admin-middle-grid">
 
-                            int orderId = recentRs.getInt("order_id");
-                            int customerId = recentRs.getInt("user_id");
-                            double amount = recentRs.getDouble("total_amount");
+                <div class="admin-analytics-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h2>Revenue Analytics</h2>
+                            <p>Visual monthly performance overview.</p>
+                        </div>
 
-                            String status = recentRs.getString("order_status");
-                            String deliveryZone = recentRs.getString("delivery_zone");
+                        <span>MONTHLY</span>
+                    </div>
 
-                            if (status == null || status.trim().isEmpty()) {
-                                status = "PENDING";
+                    <div class="admin-chart">
+                        <div style="height: 32%;"></div>
+                        <div style="height: 48%;"></div>
+                        <div class="highlight-gold" style="height: 62%;"></div>
+                        <div style="height: 55%;"></div>
+                        <div style="height: 75%;"></div>
+                        <div style="height: 40%;"></div>
+                        <div class="highlight-green" style="height: 84%;"></div>
+                        <div style="height: 62%;"></div>
+                        <div style="height: 44%;"></div>
+                        <div style="height: 58%;"></div>
+                    </div>
+
+                    <div class="admin-chart-labels">
+                        <span>Week 1</span>
+                        <span>Week 2</span>
+                        <span>Week 3</span>
+                        <span>Week 4</span>
+                    </div>
+                </div>
+
+                <aside class="admin-health-card">
+                    <h2>Operations Health</h2>
+                    <p>Your AgriBridge hub is running with active order and inventory tracking.</p>
+
+                    <div class="admin-progress-row">
+                        <div>
+                            <span>Order Processing</span>
+                            <strong>92%</strong>
+                        </div>
+
+                        <div class="admin-progress-bar">
+                            <span style="width: 92%;"></span>
+                        </div>
+                    </div>
+
+                    <div class="admin-progress-row">
+                        <div>
+                            <span>Logistics Efficiency</span>
+                            <strong>78%</strong>
+                        </div>
+
+                        <div class="admin-progress-bar soft">
+                            <span style="width: 78%;"></span>
+                        </div>
+                    </div>
+
+                    <div class="admin-alert-card">
+                        <span>Low Stock Products</span>
+                        <strong><%= lowStockProducts %></strong>
+                        <small>Products with stock quantity of 5 or below</small>
+                    </div>
+
+                    <a href="salesReport.jsp">View Full Report</a>
+                </aside>
+
+            </section>
+
+            <!-- RECENT ORDERS -->
+            <section class="admin-recent-card">
+
+                <div class="admin-card-header">
+                    <div>
+                        <h2>Recent Orders</h2>
+                        <p>Latest customer activity.</p>
+                    </div>
+
+                    <a href="manageOrders.jsp">View All</a>
+                </div>
+
+                <div class="admin-orders-list">
+
+                    <div class="admin-orders-head">
+                        <span>Order</span>
+                        <span>Customer</span>
+                        <span>Delivery</span>
+                        <span>Amount</span>
+                        <span>Status</span>
+                        <span>Action</span>
+                    </div>
+
+                    <%
+                        PreparedStatement recentPs = null;
+                        ResultSet recentRs = null;
+                        boolean hasRecentOrders = false;
+
+                        try {
+                            if (conn == null || conn.isClosed()) {
+                                conn = DBConnection.getConnection();
                             }
 
-                            if (deliveryZone == null || deliveryZone.trim().isEmpty()) {
-                                deliveryZone = "Not selected";
+                            String recentSql =
+                                "SELECT o.order_id, o.user_id, o.total_amount, o.order_status, o.delivery_zone, " +
+                                "u.full_name " +
+                                "FROM orders o " +
+                                "LEFT JOIN users u ON o.user_id = u.user_id " +
+                                "ORDER BY o.order_id DESC LIMIT 5";
+
+                            recentPs = conn.prepareStatement(recentSql);
+                            recentRs = recentPs.executeQuery();
+
+                            while (recentRs.next()) {
+                                hasRecentOrders = true;
+
+                                int orderId = recentRs.getInt("order_id");
+                                int customerId = recentRs.getInt("user_id");
+                                double amount = recentRs.getDouble("total_amount");
+
+                                String status = recentRs.getString("order_status");
+                                String delivery = recentRs.getString("delivery_zone");
+                                String customerName = recentRs.getString("full_name");
+
+                                if (status == null || status.trim().isEmpty()) {
+                                    status = "PENDING";
+                                }
+
+                                if (delivery == null || delivery.trim().isEmpty()) {
+                                    delivery = "Not selected";
+                                }
+
+                                if (customerName == null || customerName.trim().isEmpty()) {
+                                    customerName = "Customer " + customerId;
+                                }
+
+                                String statusClass = status.toLowerCase().replace(" ", "-").replace("_", "-");
+                    %>
+
+                        <div class="admin-order-row">
+                            <span>#<%= orderId %></span>
+
+                            <span>
+                                <strong><%= customerName %></strong>
+                                <small>ID: <%= customerId %></small>
+                            </span>
+
+                            <span><%= delivery %></span>
+
+                            <span>KES <%= String.format("%,.2f", amount) %></span>
+
+                            <span>
+                                <em class="admin-status <%= statusClass %>">
+                                    <%= status.replace("_", " ") %>
+                                </em>
+                            </span>
+
+                            <span>
+                                <a href="orderDetailsStaff.jsp?orderId=<%= orderId %>">View</a>
+                            </span>
+                        </div>
+
+                    <%
                             }
 
-                            String statusClass = status.toLowerCase();
-                %>
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                    %>
 
-                    <div class="estate-order-row">
-                        <span>#<%= orderId %></span>
+                        <div class="admin-empty-row">
+                            Could not load recent orders.
+                        </div>
 
-                        <span>
-                            <strong>Customer <%= customerId %></strong>
-                            <small>ID: <%= customerId %></small>
-                        </span>
-
-                        <span><%= deliveryZone %></span>
-
-                        <span>KES <%= String.format("%,.2f", amount) %></span>
-
-                        <span>
-                            <em class="estate-status <%= statusClass %>">
-                                <%= status.replace("_", " ") %>
-                            </em>
-                        </span>
-                    </div>
-
-                <%
+                    <%
+                        } finally {
+                            if (recentRs != null) try { recentRs.close(); } catch (Exception e) {}
+                            if (recentPs != null) try { recentPs.close(); } catch (Exception e) {}
+                            if (conn != null) try { conn.close(); } catch (Exception e) {}
                         }
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                %>
+                        if (!hasRecentOrders) {
+                    %>
 
-                    <div class="estate-empty-row">
-                        Could not load recent orders.
-                    </div>
+                        <div class="admin-empty-row">
+                            No recent orders yet.
+                        </div>
 
-                <%
-                    } finally {
-                        if (recentRs != null) try { recentRs.close(); } catch (Exception e) {}
-                        if (recentPs != null) try { recentPs.close(); } catch (Exception e) {}
-                        if (conn != null) try { conn.close(); } catch (Exception e) {}
-                    }
+                    <%
+                        }
+                    %>
 
-                    if (!hasRecentOrders) {
-                %>
+                </div>
 
-                    <div class="estate-empty-row">
-                        No recent orders yet.
-                    </div>
+            </section>
 
-                <%
-                    }
-                %>
-
-            </div>
-
-        </section>
+        </div>
 
     </main>
 
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="admin-bottom-nav">
+    <a href="adminDashboard.jsp" class="active">
+        <span>⌂</span>
+        Home
+    </a>
+
+    <a href="manageOrders.jsp">
+        <span>📦</span>
+        Orders
+    </a>
+
+    <a href="manageProducts.jsp">
+        <span>▣</span>
+        Products
+    </a>
+
+    <a href="salesReport.jsp">
+        <span>▥</span>
+        Reports
+    </a>
+</nav>
 
 </body>
 </html>
