@@ -18,6 +18,29 @@
 
     OrderDAO dao = new OrderDAO();
     List<Order> deliveries = dao.getDeliveriesByAgent(agentId);
+
+    int assignedCount = 0;
+    int transitCount = 0;
+    int deliveredCount = 0;
+    int failedCount = 0;
+
+    for (Order o : deliveries) {
+        String s = o.getOrderStatus();
+
+        if (s == null || s.trim().isEmpty()) {
+            s = "ASSIGNED";
+        }
+
+        if ("DELIVERED".equalsIgnoreCase(s)) {
+            deliveredCount++;
+        } else if ("IN_TRANSIT".equalsIgnoreCase(s) || "PICKED_UP".equalsIgnoreCase(s)) {
+            transitCount++;
+        } else if ("FAILED".equalsIgnoreCase(s)) {
+            failedCount++;
+        } else {
+            assignedCount++;
+        }
+    }
 %>
 
 <!DOCTYPE html>
@@ -25,306 +48,441 @@
 <head>
     <title>My Deliveries - Egerton AgriBridge Hub</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS order matters -->
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/base.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/components.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/delivery.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/responsive.css?v=1">
 </head>
 
-<body class="delivery-body compact-delivery-body">
+<body class="agent-deliveries-body">
 
-<div class="delivery-shell compact-delivery-shell">
+<div class="agent-shell">
 
-    <!-- TOP BAR -->
-    <div class="delivery-topbar compact-delivery-topbar">
-        <a href="products.jsp" class="delivery-back">←</a>
-
-        <div>
-            <h2>AgriBridge Deliveries</h2>
-            <p><%= deliveries.size() %> assigned delivery order(s)</p>
+    <!-- SIDEBAR -->
+    <aside class="agent-sidebar">
+        <div class="agent-brand">
+            <div class="agent-brand-mark">🚚</div>
+            <div>
+                <h2>AgriBridge</h2>
+                <p>Delivery Portal</p>
+            </div>
         </div>
 
-        <a href="logout" class="delivery-avatar" title="Logout">
-            🚚
-        </a>
-    </div>
+        <nav class="agent-menu">
+            <a href="myDeliveries.jsp" class="active">
+                <span>▤</span>
+                My Deliveries
+            </a>
 
-    <% if ("updated".equals(request.getParameter("status"))) { %>
-        <div class="delivery-success">
-            Delivery status updated successfully.
+            <a href="products.jsp">
+                <span>🛒</span>
+                Marketplace
+            </a>
+
+            <a href="customerDashboard.jsp">
+                <span>⌂</span>
+                Home
+            </a>
+        </nav>
+
+        <div class="agent-sidebar-promo">
+            <h3>Delivery Workbench</h3>
+            <p>Track assigned orders, update progress, and view customer fulfilment details.</p>
+            <a href="myDeliveries.jsp">Refresh Deliveries</a>
         </div>
-    <% } else if ("error".equals(request.getParameter("status"))) { %>
-        <div class="delivery-error">
-            Could not update delivery status. Please try again.
+
+        <div class="agent-sidebar-bottom">
+            <a href="logout" onclick="return confirm('Are you sure you want to logout?');">
+                ⎋ Logout
+            </a>
         </div>
-    <% } %>
+    </aside>
 
-    <% if (deliveries.isEmpty()) { %>
+    <!-- MAIN -->
+    <main class="agent-main">
 
-        <div class="delivery-empty">
-            <div>📦</div>
-            <h2>No deliveries assigned</h2>
-            <p>Your assigned customer deliveries will appear here.</p>
-        </div>
+        <!-- MOBILE TOP BAR -->
+        <header class="agent-mobile-topbar">
+            <a href="products.jsp" aria-label="Marketplace">←</a>
+            <strong>Deliveries</strong>
+            <div>
+                <a href="myDeliveries.jsp" aria-label="Refresh">⟳</a>
+                <a href="logout" aria-label="Logout">🚚</a>
+            </div>
+        </header>
 
-    <% } else { %>
+        <!-- DESKTOP TOP BAR -->
+        <header class="agent-topbar">
+            <div>
+                <h1>My Deliveries</h1>
+                <p><%= deliveries.size() %> assigned delivery order(s)</p>
+            </div>
 
-        <div class="compact-delivery-list">
+            <div class="agent-top-actions">
+                <a href="myDeliveries.jsp" class="agent-top-btn">Refresh</a>
+                <a href="products.jsp" class="agent-icon-btn" title="Marketplace">🛒</a>
+                <a href="logout" class="agent-profile" title="Logout">🚚</a>
+            </div>
+        </header>
 
-            <%
-                for (Order o : deliveries) {
-                    String currentStatus = o.getOrderStatus();
+        <div class="agent-content">
 
-                    if (currentStatus == null || currentStatus.trim().isEmpty()) {
-                        currentStatus = "ASSIGNED";
-                    }
+            <!-- HERO -->
+            <section class="agent-hero-card">
+                <div>
+                    <p class="agent-eyebrow">DELIVERY AGENT</p>
+                    <h2>Assigned Deliveries</h2>
+                    <p>
+                        View customer destinations, order contents, delivery progress, and update order movement.
+                    </p>
 
-                    String statusLabel = currentStatus.replace("_", " ");
-                    String statusClass = currentStatus.toLowerCase();
-
-                    String deliveryAddress = o.getDeliveryAddress();
-
-                    if (deliveryAddress == null || deliveryAddress.trim().isEmpty()) {
-                        deliveryAddress = "Location not provided";
-                    }
-
-                    String deliveryTime = o.getDeliveryTime();
-
-                    if (deliveryTime == null || deliveryTime.trim().isEmpty()) {
-                        deliveryTime = "Time not specified";
-                    }
-
-                    boolean assignedDone =
-                            "ASSIGNED".equalsIgnoreCase(currentStatus) ||
-                            "PICKED_UP".equalsIgnoreCase(currentStatus) ||
-                            "IN_TRANSIT".equalsIgnoreCase(currentStatus) ||
-                            "DELIVERED".equalsIgnoreCase(currentStatus);
-
-                    boolean pickedDone =
-                            "PICKED_UP".equalsIgnoreCase(currentStatus) ||
-                            "IN_TRANSIT".equalsIgnoreCase(currentStatus) ||
-                            "DELIVERED".equalsIgnoreCase(currentStatus);
-
-                    boolean transitDone =
-                            "IN_TRANSIT".equalsIgnoreCase(currentStatus) ||
-                            "DELIVERED".equalsIgnoreCase(currentStatus);
-
-                    boolean deliveredDone =
-                            "DELIVERED".equalsIgnoreCase(currentStatus);
-            %>
-
-            <div class="compact-delivery-card">
-
-                <!-- COMPACT HEADER -->
-                <div class="compact-delivery-header">
-                    <div>
-                        <p class="delivery-eyebrow">ORDER #<%= o.getOrderId() %></p>
-                        <h2>Customer Delivery</h2>
-                    </div>
-
-                    <span class="compact-status-pill <%= statusClass %>">
-                        <%= statusLabel %>
-                    </span>
-                </div>
-
-                <!-- QUICK SUMMARY -->
-                <div class="compact-delivery-main">
-                    <div class="compact-info-item">
-                        <span>Customer</span>
-                        <strong>ID: <%= o.getUserId() %></strong>
-                    </div>
-
-                    <div class="compact-info-item">
-                        <span>Total</span>
-                        <strong>KES <%= String.format("%.2f", o.getTotalAmount()) %></strong>
-                    </div>
-
-                    <div class="compact-info-item wide">
-                        <span>Address / Pickup Point</span>
-                        <strong><%= deliveryAddress %></strong>
-                    </div>
-
-                    <div class="compact-info-item">
-                        <span>Preferred Time</span>
-                        <strong><%= deliveryTime %></strong>
+                    <div class="agent-hero-actions">
+                        <a href="myDeliveries.jsp">Refresh List</a>
+                        <a href="products.jsp">Open Marketplace</a>
                     </div>
                 </div>
 
-                <!-- MINI STATUS TRACK -->
-                <div class="compact-status-track">
-                    <div class="<%= assignedDone ? "done" : "" %>">
-                        <span>1</span>
-                        <p>Assigned</p>
-                    </div>
+                <div class="agent-hero-summary">
+                    <span>Assigned Orders</span>
+                    <strong><%= deliveries.size() %></strong>
+                    <small><%= deliveredCount %> delivered</small>
+                </div>
+            </section>
 
-                    <div class="<%= pickedDone ? "done" : "" %>">
-                        <span>2</span>
-                        <p>Picked</p>
-                    </div>
+            <% if ("updated".equals(request.getParameter("status"))) { %>
+                <div class="agent-success">
+                    Delivery status updated successfully.
+                </div>
+            <% } else if ("error".equals(request.getParameter("status"))) { %>
+                <div class="agent-error">
+                    Could not update delivery status. Please try again.
+                </div>
+            <% } %>
 
-                    <div class="<%= transitDone ? "done" : "" %>">
-                        <span>3</span>
-                        <p>Transit</p>
-                    </div>
-
-                    <div class="<%= deliveredDone ? "done" : "" %>">
-                        <span>4</span>
-                        <p>Delivered</p>
-                    </div>
+            <!-- STATS -->
+            <section class="agent-stats-grid">
+                <div class="agent-stat-card">
+                    <div>📦</div>
+                    <span>Assigned</span>
+                    <h3><%= assignedCount %></h3>
                 </div>
 
-                <!-- STATUS UPDATE -->
-                <form action="updateDeliveryStatus" method="post" class="compact-delivery-form">
-                    <input type="hidden" name="orderId" value="<%= o.getOrderId() %>">
+                <div class="agent-stat-card warning">
+                    <div>🚚</div>
+                    <span>In Transit</span>
+                    <h3><%= transitCount %></h3>
+                </div>
 
-                    <select name="deliveryStatus" required>
-                        <option value="ASSIGNED" <%= "ASSIGNED".equals(currentStatus) ? "selected" : "" %>>ASSIGNED</option>
-                        <option value="PICKED_UP" <%= "PICKED_UP".equals(currentStatus) ? "selected" : "" %>>PICKED UP</option>
-                        <option value="IN_TRANSIT" <%= "IN_TRANSIT".equals(currentStatus) ? "selected" : "" %>>IN TRANSIT</option>
-                        <option value="DELIVERED" <%= "DELIVERED".equals(currentStatus) ? "selected" : "" %>>DELIVERED</option>
-                        <option value="FAILED" <%= "FAILED".equals(currentStatus) ? "selected" : "" %>>FAILED</option>
-                    </select>
+                <div class="agent-stat-card">
+                    <div>✅</div>
+                    <span>Delivered</span>
+                    <h3><%= deliveredCount %></h3>
+                </div>
 
-                    <button type="submit">Update</button>
-                </form>
+                <div class="agent-stat-card danger">
+                    <div>⚠️</div>
+                    <span>Failed</span>
+                    <h3><%= failedCount %></h3>
+                </div>
+            </section>
 
-                <!-- EXPANDABLE CUSTOMER DETAILS + ITEMS -->
-                <details class="compact-delivery-details">
-                    <summary>View customer details and order contents</summary>
+            <% if (deliveries.isEmpty()) { %>
 
-                    <!-- CUSTOMER DETAILS -->
-                    <div class="compact-customer-box">
-                        <p class="delivery-eyebrow">CUSTOMER DETAILS</p>
+                <div class="agent-empty-state">
+                    <div>📦</div>
+                    <h2>No deliveries assigned</h2>
+                    <p>Your assigned customer deliveries will appear here.</p>
+                    <a href="myDeliveries.jsp">Refresh</a>
+                </div>
 
-                        <div class="compact-customer-grid">
+            <% } else { %>
+
+                <section class="agent-delivery-list">
+
+                    <%
+                        for (Order o : deliveries) {
+                            String currentStatus = o.getOrderStatus();
+
+                            if (currentStatus == null || currentStatus.trim().isEmpty()) {
+                                currentStatus = "ASSIGNED";
+                            }
+
+                            String statusLabel = currentStatus.replace("_", " ");
+                            String statusClass = currentStatus.toLowerCase().replace("_", "-");
+
+                            String deliveryAddress = o.getDeliveryAddress();
+
+                            if (deliveryAddress == null || deliveryAddress.trim().isEmpty()) {
+                                deliveryAddress = "Location not provided";
+                            }
+
+                            String deliveryTime = o.getDeliveryTime();
+
+                            if (deliveryTime == null || deliveryTime.trim().isEmpty()) {
+                                deliveryTime = "Time not specified";
+                            }
+
+                            boolean assignedDone =
+                                    "ASSIGNED".equalsIgnoreCase(currentStatus) ||
+                                    "PICKED_UP".equalsIgnoreCase(currentStatus) ||
+                                    "IN_TRANSIT".equalsIgnoreCase(currentStatus) ||
+                                    "DELIVERED".equalsIgnoreCase(currentStatus);
+
+                            boolean pickedDone =
+                                    "PICKED_UP".equalsIgnoreCase(currentStatus) ||
+                                    "IN_TRANSIT".equalsIgnoreCase(currentStatus) ||
+                                    "DELIVERED".equalsIgnoreCase(currentStatus);
+
+                            boolean transitDone =
+                                    "IN_TRANSIT".equalsIgnoreCase(currentStatus) ||
+                                    "DELIVERED".equalsIgnoreCase(currentStatus);
+
+                            boolean deliveredDone =
+                                    "DELIVERED".equalsIgnoreCase(currentStatus);
+                    %>
+
+                    <article class="agent-delivery-card">
+
+                        <div class="agent-delivery-header">
                             <div>
-                                <span>Customer ID</span>
-                                <strong><%= o.getUserId() %></strong>
+                                <p class="agent-small-label">ORDER #<%= o.getOrderId() %></p>
+                                <h2>Customer Delivery</h2>
+                                <p>Customer ID: <strong><%= o.getUserId() %></strong></p>
                             </div>
 
-                            <div>
-                                <span>Preferred Time</span>
-                                <strong><%= deliveryTime %></strong>
+                            <span class="agent-status-pill <%= statusClass %>">
+                                <%= statusLabel %>
+                            </span>
+                        </div>
+
+                        <div class="agent-delivery-main">
+                            <div class="agent-info-item">
+                                <span>Customer</span>
+                                <strong>ID: <%= o.getUserId() %></strong>
                             </div>
 
-                            <div>
-                                <span>Total Amount</span>
+                            <div class="agent-info-item">
+                                <span>Total</span>
                                 <strong>KES <%= String.format("%.2f", o.getTotalAmount()) %></strong>
                             </div>
 
-                            <div>
-                                <span>Status</span>
-                                <strong><%= statusLabel %></strong>
-                            </div>
-
-                            <div class="full">
+                            <div class="agent-info-item wide">
                                 <span>Address / Pickup Point</span>
                                 <strong><%= deliveryAddress %></strong>
                             </div>
+
+                            <div class="agent-info-item">
+                                <span>Preferred Time</span>
+                                <strong><%= deliveryTime %></strong>
+                            </div>
                         </div>
 
-                        <div class="compact-contact-actions">
-                            <a href="#" class="delivery-contact-btn">📞 Call Customer</a>
-                            <a href="#" class="delivery-contact-btn">💬 Message Customer</a>
+                        <div class="agent-status-track">
+                            <div class="<%= assignedDone ? "done" : "" %>">
+                                <span>1</span>
+                                <p>Assigned</p>
+                            </div>
+
+                            <div class="<%= pickedDone ? "done" : "" %>">
+                                <span>2</span>
+                                <p>Picked</p>
+                            </div>
+
+                            <div class="<%= transitDone ? "done" : "" %>">
+                                <span>3</span>
+                                <p>Transit</p>
+                            </div>
+
+                            <div class="<%= deliveredDone ? "done" : "" %>">
+                                <span>4</span>
+                                <p>Delivered</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- ORDER CONTENTS -->
-                    <div class="compact-items-list">
-                        <p class="delivery-eyebrow">ORDER CONTENTS</p>
+                        <form action="updateDeliveryStatus" method="post" class="agent-delivery-form">
+                            <input type="hidden" name="orderId" value="<%= o.getOrderId() %>">
 
-                        <%
-                            Connection conn = null;
-                            PreparedStatement ps = null;
-                            ResultSet rs = null;
-                            boolean hasItems = false;
+                            <div>
+                                <label>Update Delivery Status</label>
+                                <select name="deliveryStatus" required>
+                                    <option value="ASSIGNED" <%= "ASSIGNED".equals(currentStatus) ? "selected" : "" %>>ASSIGNED</option>
+                                    <option value="PICKED_UP" <%= "PICKED_UP".equals(currentStatus) ? "selected" : "" %>>PICKED UP</option>
+                                    <option value="IN_TRANSIT" <%= "IN_TRANSIT".equals(currentStatus) ? "selected" : "" %>>IN TRANSIT</option>
+                                    <option value="DELIVERED" <%= "DELIVERED".equals(currentStatus) ? "selected" : "" %>>DELIVERED</option>
+                                    <option value="FAILED" <%= "FAILED".equals(currentStatus) ? "selected" : "" %>>FAILED</option>
+                                </select>
+                            </div>
 
-                            try {
-                                conn = DBConnection.getConnection();
+                            <button type="submit">Update</button>
+                        </form>
 
-                                String itemSql =
-                                    "SELECT oi.quantity, oi.price, p.product_name, p.description, p.image_url " +
-                                    "FROM order_items oi " +
-                                    "JOIN products p ON oi.product_id = p.product_id " +
-                                    "WHERE oi.order_id = ?";
+                        <details class="agent-delivery-details">
+                            <summary>View customer details and order contents</summary>
 
-                                ps = conn.prepareStatement(itemSql);
-                                ps.setInt(1, o.getOrderId());
+                            <div class="agent-customer-box">
+                                <p class="agent-small-label">CUSTOMER DETAILS</p>
 
-                                rs = ps.executeQuery();
+                                <div class="agent-customer-grid">
+                                    <div>
+                                        <span>Customer ID</span>
+                                        <strong><%= o.getUserId() %></strong>
+                                    </div>
 
-                                while (rs.next()) {
-                                    hasItems = true;
+                                    <div>
+                                        <span>Preferred Time</span>
+                                        <strong><%= deliveryTime %></strong>
+                                    </div>
 
-                                    String productName = rs.getString("product_name");
-                                    String description = rs.getString("description");
-                                    String imageUrl = rs.getString("image_url");
-                                    int quantity = rs.getInt("quantity");
-                                    double price = rs.getDouble("price");
-                                    double itemSubtotal = quantity * price;
-                        %>
+                                    <div>
+                                        <span>Total Amount</span>
+                                        <strong>KES <%= String.format("%.2f", o.getTotalAmount()) %></strong>
+                                    </div>
 
-                            <div class="compact-delivery-item">
-                                <% if (imageUrl != null && !imageUrl.trim().isEmpty()) { %>
-                                    <img src="<%= request.getContextPath() + "/" + imageUrl %>"
-                                         alt="<%= productName %>">
-                                <% } else { %>
-                                    <div class="delivery-item-placeholder">No Image</div>
-                                <% } %>
+                                    <div>
+                                        <span>Status</span>
+                                        <strong><%= statusLabel %></strong>
+                                    </div>
 
-                                <div>
-                                    <h3><%= productName %></h3>
-                                    <p>
-                                        <%= quantity %> item(s)
-                                        <% if (description != null && !description.trim().isEmpty()) { %>
-                                            • <%= description %>
-                                        <% } %>
-                                    </p>
+                                    <div class="full">
+                                        <span>Address / Pickup Point</span>
+                                        <strong><%= deliveryAddress %></strong>
+                                    </div>
                                 </div>
 
-                                <strong>KES <%= String.format("%.2f", itemSubtotal) %></strong>
+                                <div class="agent-contact-actions">
+                                    <a href="#">📞 Call Customer</a>
+                                    <a href="#">💬 Message Customer</a>
+                                </div>
                             </div>
 
-                        <%
-                                }
+                            <div class="agent-items-list">
+                                <p class="agent-small-label">ORDER CONTENTS</p>
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                        %>
+                                <%
+                                    Connection conn = null;
+                                    PreparedStatement ps = null;
+                                    ResultSet rs = null;
+                                    boolean hasItems = false;
 
-                            <div class="delivery-mini-error">
-                                Could not load order items.
+                                    try {
+                                        conn = DBConnection.getConnection();
+
+                                        String itemSql =
+                                            "SELECT oi.quantity, oi.price, p.product_name, p.description, p.image_url " +
+                                            "FROM order_items oi " +
+                                            "JOIN products p ON oi.product_id = p.product_id " +
+                                            "WHERE oi.order_id = ?";
+
+                                        ps = conn.prepareStatement(itemSql);
+                                        ps.setInt(1, o.getOrderId());
+
+                                        rs = ps.executeQuery();
+
+                                        while (rs.next()) {
+                                            hasItems = true;
+
+                                            String productName = rs.getString("product_name");
+                                            String description = rs.getString("description");
+                                            String imageUrl = rs.getString("image_url");
+                                            int quantity = rs.getInt("quantity");
+                                            double price = rs.getDouble("price");
+                                            double itemSubtotal = quantity * price;
+                                %>
+
+                                    <div class="agent-delivery-item">
+                                        <% if (imageUrl != null && !imageUrl.trim().isEmpty()) { %>
+                                            <img src="<%= request.getContextPath() + "/" + imageUrl %>"
+                                                 alt="<%= productName %>">
+                                        <% } else { %>
+                                            <div class="agent-item-placeholder">No Image</div>
+                                        <% } %>
+
+                                        <div>
+                                            <h3><%= productName %></h3>
+                                            <p>
+                                                <%= quantity %> item(s)
+                                                <% if (description != null && !description.trim().isEmpty()) { %>
+                                                    • <%= description %>
+                                                <% } %>
+                                            </p>
+                                        </div>
+
+                                        <strong>KES <%= String.format("%.2f", itemSubtotal) %></strong>
+                                    </div>
+
+                                <%
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                %>
+
+                                    <div class="agent-mini-error">
+                                        Could not load order items.
+                                    </div>
+
+                                <%
+                                    } finally {
+                                        if (rs != null) try { rs.close(); } catch (Exception e) {}
+                                        if (ps != null) try { ps.close(); } catch (Exception e) {}
+                                        if (conn != null) try { conn.close(); } catch (Exception e) {}
+                                    }
+
+                                    if (!hasItems) {
+                                %>
+
+                                    <div class="agent-mini-empty">
+                                        No order items found.
+                                    </div>
+
+                                <%
+                                    }
+                                %>
+
                             </div>
+                        </details>
 
-                        <%
-                            } finally {
-                                if (rs != null) try { rs.close(); } catch (Exception e) {}
-                                if (ps != null) try { ps.close(); } catch (Exception e) {}
-                                if (conn != null) try { conn.close(); } catch (Exception e) {}
-                            }
+                    </article>
 
-                            if (!hasItems) {
-                        %>
+                    <%
+                        }
+                    %>
 
-                            <div class="delivery-mini-empty">
-                                No order items found.
-                            </div>
+                </section>
 
-                        <%
-                            }
-                        %>
-
-                    </div>
-                </details>
-
-            </div>
-
-            <%
-                }
-            %>
+            <% } %>
 
         </div>
 
-    <% } %>
+    </main>
 
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="agent-bottom-nav">
+    <a href="myDeliveries.jsp" class="active">
+        <span>🚚</span>
+        Deliveries
+    </a>
+
+    <a href="products.jsp">
+        <span>🛒</span>
+        Shop
+    </a>
+
+    <a href="myDeliveries.jsp">
+        <span>⟳</span>
+        Refresh
+    </a>
+
+    <a href="logout">
+        <span>⎋</span>
+        Logout
+    </a>
+</nav>
 
 </body>
 </html>

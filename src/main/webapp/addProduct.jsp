@@ -13,21 +13,30 @@
 <head>
     <title>Add Product - Egerton AgriBridge Hub</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS order matters -->
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/base.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/components.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/add-product.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/responsive.css?v=1">
 </head>
 
-<body class="estate-dashboard-body">
+<body class="add-product-body">
 
-<div class="estate-layout">
+<div class="add-product-shell">
 
     <!-- SIDEBAR -->
-    <aside class="estate-sidebar">
-        <div class="estate-brand">
-            <h2>AgriBridge</h2>
-            <p>Modern Pastoral Management</p>
+    <aside class="add-product-sidebar">
+        <div class="add-product-brand">
+            <div class="add-product-brand-mark">🌿</div>
+            <div>
+                <h2>AgriBridge</h2>
+                <p>Admin Portal</p>
+            </div>
         </div>
 
-        <nav class="estate-menu">
+        <nav class="add-product-menu">
             <a href="adminDashboard.jsp">
                 <span>▦</span>
                 Dashboard
@@ -35,7 +44,7 @@
 
             <a href="manageProducts.jsp">
                 <span>▣</span>
-                Manage Products
+                Products
             </a>
 
             <a href="addProduct.jsp" class="active">
@@ -45,12 +54,12 @@
 
             <a href="manageOrders.jsp">
                 <span>▤</span>
-                Manage Orders
+                Orders
             </a>
 
             <a href="salesReport.jsp">
                 <span>▥</span>
-                Sales Reports
+                Reports
             </a>
 
             <a href="products.jsp">
@@ -59,63 +68,101 @@
             </a>
         </nav>
 
-        <div class="estate-sidebar-bottom">
-            <a class="estate-add-btn" href="manageProducts.jsp">
-                View Inventory
-            </a>
+        <div class="add-product-sidebar-promo">
+            <h3>Product Creation</h3>
+            <p>Add clear product details, correct stock, and a clean product image for the marketplace.</p>
+            <a href="manageProducts.jsp">View Inventory</a>
+        </div>
 
-            <a href="logout" class="estate-logout">
+        <div class="add-product-sidebar-bottom">
+            <a href="logout" onclick="return confirm('Are you sure you want to logout?');">
                 ⎋ Logout
             </a>
         </div>
     </aside>
 
     <!-- MAIN -->
-    <main class="estate-main">
+    <main class="add-product-main">
 
-        <header class="estate-topbar">
+        <!-- MOBILE TOP BAR -->
+        <header class="add-product-mobile-topbar">
+            <a href="manageProducts.jsp" aria-label="Back to products">←</a>
+            <strong>Add Product</strong>
+            <div>
+                <a href="manageOrders.jsp" aria-label="Orders">📦</a>
+                <a href="adminDashboard.jsp" aria-label="Dashboard">👨‍💼</a>
+            </div>
+        </header>
+
+        <!-- DESKTOP TOP BAR -->
+        <header class="add-product-topbar">
             <div>
                 <h1>Add Product</h1>
                 <p>Create a new dairy product for the customer marketplace.</p>
             </div>
 
-            <div class="estate-top-actions">
-                <a href="manageProducts.jsp" class="estate-icon-btn">▣</a>
-                <a href="adminDashboard.jsp" class="estate-profile">👨‍💼</a>
+            <div class="add-product-top-actions">
+                <a href="manageProducts.jsp" class="add-product-top-btn">View Inventory</a>
+
+                <a href="products.jsp"
+                   class="add-product-icon-btn"
+                   title="Marketplace">
+                    🛒
+                </a>
+
+                <a href="adminDashboard.jsp"
+                   class="add-product-profile"
+                   title="Admin Dashboard">
+                    👨‍💼
+                </a>
             </div>
         </header>
 
-        <div class="estate-inner-page">
+        <div class="add-product-content">
 
-            <div class="admin-products-header">
+            <!-- HERO -->
+            <section class="add-product-hero-card">
                 <div>
-                    <p class="eyebrow">PRODUCT CREATION</p>
-                    <h1>Add New Product</h1>
-                    <p>Upload product details, price, stock quantity, and image for the public catalogue.</p>
+                    <p class="add-product-eyebrow">PRODUCT CREATION</p>
+                    <h2>Add New Product</h2>
+                    <p>
+                        Upload product details, price, stock quantity, and image for the public dairy catalogue.
+                    </p>
+
+                    <div class="add-product-hero-actions">
+                        <a href="manageProducts.jsp">Back to Products</a>
+                        <a href="products.jsp">View Marketplace</a>
+                    </div>
                 </div>
 
-                <div class="admin-products-header-actions">
-                    <a class="btn btn-secondary" href="manageProducts.jsp">Back to Products</a>
-                    <a class="btn" href="products.jsp">View Marketplace</a>
+                <div class="add-product-hero-summary">
+                    <span>Required Details</span>
+                    <strong>4</strong>
+                    <small>Name, price, stock, and image</small>
                 </div>
-            </div>
+            </section>
 
             <% if ("1".equals(request.getParameter("success"))) { %>
-                <div class="review-success">
+                <div class="add-product-success">
                     Product added successfully.
                 </div>
             <% } else if ("error".equals(request.getParameter("status"))) { %>
-                <div class="review-error">
+                <div class="add-product-error">
                     Could not add product. Please check your input and try again.
                 </div>
             <% } %>
 
-            <div class="product-form-layout">
+            <section class="add-product-layout">
 
                 <!-- FORM -->
-                <div class="product-form-card">
-                    <h2>Product Information</h2>
-                    <p>Fill in the product details below.</p>
+                <div class="add-product-form-card">
+                    <div class="add-product-card-header">
+                        <div>
+                            <h2>Product Information</h2>
+                            <p>Fill in the product details below.</p>
+                        </div>
+                        <span>Step 1</span>
+                    </div>
 
                     <form action="addProduct" method="post" enctype="multipart/form-data" onsubmit="return validateProductForm();">
 
@@ -132,7 +179,7 @@
                                   rows="5"
                                   placeholder="Describe the product, packaging, freshness, or usage..."></textarea>
 
-                        <div class="product-form-two">
+                        <div class="add-product-form-two">
                             <div>
                                 <label>Price</label>
                                 <input type="number"
@@ -156,50 +203,98 @@
                         </div>
 
                         <label>Upload Image</label>
-                        <input type="file"
-                               name="imageFile"
-                               id="imageFile"
-                               accept="image/*"
-                               onchange="previewProductImage(event)"
-                               required>
+                        <label class="add-product-upload-box" for="imageFile">
+                            <input type="file"
+                                   name="imageFile"
+                                   id="imageFile"
+                                   accept="image/*"
+                                   onchange="previewProductImage(event)"
+                                   required>
 
-                        <small class="product-form-helper">
-                            Recommended image: clear product photo, landscape or square format.
-                        </small>
+                            <span>📷</span>
+                            <strong>Choose product image</strong>
+                            <small>Recommended: clear square or landscape photo.</small>
+                        </label>
 
-                        <div class="product-form-actions">
-                            <button class="btn" type="submit">Add Product</button>
-                            <a class="btn btn-secondary" href="manageProducts.jsp">Cancel</a>
+                        <div class="add-product-form-actions">
+                            <button type="submit">Add Product</button>
+                            <a href="manageProducts.jsp">Cancel</a>
                         </div>
 
                     </form>
                 </div>
 
                 <!-- PREVIEW -->
-                <div class="product-preview-card">
-                    <p class="eyebrow">LIVE PREVIEW</p>
-                    <h2>Product Preview</h2>
-
-                    <div class="product-preview-image">
-                        <img id="imagePreview" src="" alt="Product preview" class="hidden">
-                        <div id="imagePlaceholder">No image selected</div>
+                <aside class="add-product-preview-card">
+                    <div class="add-product-card-header">
+                        <div>
+                            <p class="add-product-eyebrow dark">LIVE PREVIEW</p>
+                            <h2>Product Preview</h2>
+                        </div>
                     </div>
 
-                    <div class="product-preview-info">
+                    <div class="add-product-preview-image">
+                        <img id="imagePreview" src="" alt="Product preview" class="hidden">
+                        <div id="imagePlaceholder">
+                            <span>🥛</span>
+                            <strong>No image selected</strong>
+                            <small>Your uploaded product image will appear here.</small>
+                        </div>
+                    </div>
+
+                    <div class="add-product-preview-info">
                         <h3 id="previewName">Product name</h3>
                         <p id="previewDescription">Product description will appear here.</p>
-                        <strong id="previewPrice">KES 0.00</strong>
-                        <span id="previewStock">Stock: 0</span>
-                    </div>
-                </div>
 
-            </div>
+                        <div class="add-product-preview-meta">
+                            <div>
+                                <span>Price</span>
+                                <strong id="previewPrice">KES 0.00</strong>
+                            </div>
+
+                            <div>
+                                <span>Stock</span>
+                                <strong id="previewStock">0 units</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="add-product-help-card">
+                        <h3>Image tip</h3>
+                        <p>Use a bright, clean image with the product centered. Avoid very tall images because they create too much scrolling on phone.</p>
+                    </div>
+                </aside>
+
+            </section>
 
         </div>
 
     </main>
 
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="add-product-bottom-nav">
+    <a href="adminDashboard.jsp">
+        <span>⌂</span>
+        Home
+    </a>
+
+    <a href="manageOrders.jsp">
+        <span>📦</span>
+        Orders
+    </a>
+
+    <a href="manageProducts.jsp">
+        <span>▣</span>
+        Products
+    </a>
+
+    <a href="addProduct.jsp" class="active">
+        <span>＋</span>
+        Add
+    </a>
+</nav>
 
 <script>
     const productName = document.getElementById("productName");
@@ -216,7 +311,7 @@
         previewName.innerText = productName.value || "Product name";
         previewDescription.innerText = description.value || "Product description will appear here.";
         previewPrice.innerText = "KES " + (price.value ? parseFloat(price.value).toFixed(2) : "0.00");
-        previewStock.innerText = "Stock: " + (quantity.value || "0");
+        previewStock.innerText = (quantity.value || "0") + " units";
     }
 
     productName.addEventListener("input", updatePreview);
@@ -237,6 +332,11 @@
     }
 
     function validateProductForm() {
+        if (productName.value.trim().length < 2) {
+            alert("Product name must be at least 2 characters.");
+            return false;
+        }
+
         if (parseFloat(price.value) <= 0) {
             alert("Price must be greater than zero.");
             return false;

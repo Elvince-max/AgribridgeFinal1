@@ -33,21 +33,30 @@
 <head>
     <title>Edit Product - Egerton AgriBridge Hub</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style-backup.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS order matters -->
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/base.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/components.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/edit-product.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/responsive.css?v=1">
 </head>
 
-<body class="estate-dashboard-body">
+<body class="edit-product-body">
 
-<div class="estate-layout">
+<div class="edit-product-shell">
 
     <!-- SIDEBAR -->
-    <aside class="estate-sidebar">
-        <div class="estate-brand">
-            <h2>AgriBridge</h2>
-            <p>Modern Pastoral Management</p>
+    <aside class="edit-product-sidebar">
+        <div class="edit-product-brand">
+            <div class="edit-product-brand-mark">🌿</div>
+            <div>
+                <h2>AgriBridge</h2>
+                <p>Admin Portal</p>
+            </div>
         </div>
 
-        <nav class="estate-menu">
+        <nav class="edit-product-menu">
             <a href="adminDashboard.jsp">
                 <span>▦</span>
                 Dashboard
@@ -55,7 +64,7 @@
 
             <a href="manageProducts.jsp" class="active">
                 <span>▣</span>
-                Manage Products
+                Products
             </a>
 
             <a href="addProduct.jsp">
@@ -65,12 +74,12 @@
 
             <a href="manageOrders.jsp">
                 <span>▤</span>
-                Manage Orders
+                Orders
             </a>
 
             <a href="salesReport.jsp">
                 <span>▥</span>
-                Sales Reports
+                Reports
             </a>
 
             <a href="products.jsp">
@@ -79,59 +88,97 @@
             </a>
         </nav>
 
-        <div class="estate-sidebar-bottom">
-            <a class="estate-add-btn" href="addProduct.jsp">
-                ＋ Add Product
-            </a>
+        <div class="edit-product-sidebar-promo">
+            <h3>Product Update</h3>
+            <p>Modify product details carefully because changes affect what customers see.</p>
+            <a href="manageProducts.jsp">Back to Inventory</a>
+        </div>
 
-            <a href="logout" class="estate-logout">
+        <div class="edit-product-sidebar-bottom">
+            <a href="logout" onclick="return confirm('Are you sure you want to logout?');">
                 ⎋ Logout
             </a>
         </div>
     </aside>
 
     <!-- MAIN -->
-    <main class="estate-main">
+    <main class="edit-product-main">
 
-        <header class="estate-topbar">
+        <!-- MOBILE TOP BAR -->
+        <header class="edit-product-mobile-topbar">
+            <a href="manageProducts.jsp" aria-label="Back to products">←</a>
+            <strong>Edit Product</strong>
+            <div>
+                <a href="addProduct.jsp" aria-label="Add Product">＋</a>
+                <a href="adminDashboard.jsp" aria-label="Dashboard">👨‍💼</a>
+            </div>
+        </header>
+
+        <!-- DESKTOP TOP BAR -->
+        <header class="edit-product-topbar">
             <div>
                 <h1>Edit Product</h1>
                 <p>Update product details, price, stock, and catalogue image.</p>
             </div>
 
-            <div class="estate-top-actions">
-                <a href="manageProducts.jsp" class="estate-icon-btn">▣</a>
-                <a href="adminDashboard.jsp" class="estate-profile">👨‍💼</a>
+            <div class="edit-product-top-actions">
+                <a href="manageProducts.jsp" class="edit-product-top-btn">Back to Products</a>
+
+                <a href="products.jsp"
+                   class="edit-product-icon-btn"
+                   title="Marketplace">
+                    🛒
+                </a>
+
+                <a href="adminDashboard.jsp"
+                   class="edit-product-profile"
+                   title="Admin Dashboard">
+                    👨‍💼
+                </a>
             </div>
         </header>
 
-        <div class="estate-inner-page">
+        <div class="edit-product-content">
 
-            <div class="admin-products-header">
+            <!-- HERO -->
+            <section class="edit-product-hero-card">
                 <div>
-                    <p class="eyebrow">PRODUCT UPDATE</p>
-                    <h1>Edit Product</h1>
-                    <p>Modify existing product information and refresh the public catalogue.</p>
+                    <p class="edit-product-eyebrow">PRODUCT UPDATE</p>
+                    <h2>Edit Product #<%= product.getProductId() %></h2>
+                    <p>
+                        Modify existing product information and refresh the public catalogue.
+                    </p>
+
+                    <div class="edit-product-hero-actions">
+                        <a href="manageProducts.jsp">Back to Products</a>
+                        <a href="products.jsp">View Marketplace</a>
+                    </div>
                 </div>
 
-                <div class="admin-products-header-actions">
-                    <a class="btn btn-secondary" href="manageProducts.jsp">Back to Products</a>
-                    <a class="btn" href="products.jsp">View Marketplace</a>
+                <div class="edit-product-hero-summary">
+                    <span>Current Stock</span>
+                    <strong><%= product.getStockQuantity() %></strong>
+                    <small>KES <%= String.format("%.2f", product.getPrice()) %></small>
                 </div>
-            </div>
+            </section>
 
             <% if ("error".equals(request.getParameter("status"))) { %>
-                <div class="review-error">
+                <div class="edit-product-error">
                     Could not update product. Please check your input and try again.
                 </div>
             <% } %>
 
-            <div class="product-form-layout">
+            <section class="edit-product-layout">
 
                 <!-- FORM -->
-                <div class="product-form-card">
-                    <h2>Product Information</h2>
-                    <p>Update the product details below.</p>
+                <div class="edit-product-form-card">
+                    <div class="edit-product-card-header">
+                        <div>
+                            <h2>Product Information</h2>
+                            <p>Update the product details below.</p>
+                        </div>
+                        <span>Editing</span>
+                    </div>
 
                     <form action="updateProduct" method="post" enctype="multipart/form-data" onsubmit="return validateProductForm();">
 
@@ -151,7 +198,7 @@
                                   rows="5"
                                   required><%= product.getDescription() != null ? product.getDescription() : "" %></textarea>
 
-                        <div class="product-form-two">
+                        <div class="edit-product-form-two">
                             <div>
                                 <label>Price</label>
                                 <input type="number"
@@ -175,56 +222,108 @@
                         </div>
 
                         <label>Change Image Optional</label>
-                        <input type="file"
-                               name="imageFile"
-                               id="imageFile"
-                               accept="image/*"
-                               onchange="previewProductImage(event)">
+                        <label class="edit-product-upload-box" for="imageFile">
+                            <input type="file"
+                                   name="imageFile"
+                                   id="imageFile"
+                                   accept="image/*"
+                                   onchange="previewProductImage(event)">
 
-                        <small class="product-form-helper">
-                            Leave empty if you want to keep the current image.
-                        </small>
+                            <span>📷</span>
+                            <strong>Choose a new image</strong>
+                            <small>Leave empty if you want to keep the current image.</small>
+                        </label>
 
-                        <div class="product-form-actions">
-                            <button class="btn" type="submit">Update Product</button>
-                            <a class="btn btn-secondary" href="manageProducts.jsp">Cancel</a>
+                        <div class="edit-product-form-actions">
+                            <button type="submit">Update Product</button>
+                            <a href="manageProducts.jsp">Cancel</a>
                         </div>
 
                     </form>
                 </div>
 
                 <!-- PREVIEW -->
-                <div class="product-preview-card">
-                    <p class="eyebrow">CURRENT PREVIEW</p>
-                    <h2>Product Preview</h2>
+                <aside class="edit-product-preview-card">
+                    <div class="edit-product-card-header">
+                        <div>
+                            <p class="edit-product-eyebrow dark">CURRENT PREVIEW</p>
+                            <h2>Product Preview</h2>
+                        </div>
+                    </div>
 
-                    <div class="product-preview-image">
+                    <div class="edit-product-preview-image">
                         <% if (!imageUrl.trim().isEmpty()) { %>
                             <img id="imagePreview"
                                  src="<%= request.getContextPath() + "/" + imageUrl %>"
                                  alt="<%= product.getProductName() %>">
-                            <div id="imagePlaceholder" class="hidden">No image selected</div>
+                            <div id="imagePlaceholder" class="hidden">
+                                <span>🥛</span>
+                                <strong>No image selected</strong>
+                                <small>Your selected image will appear here.</small>
+                            </div>
                         <% } else { %>
                             <img id="imagePreview" src="" alt="Product preview" class="hidden">
-                            <div id="imagePlaceholder">No image selected</div>
+                            <div id="imagePlaceholder">
+                                <span>🥛</span>
+                                <strong>No image selected</strong>
+                                <small>Your selected image will appear here.</small>
+                            </div>
                         <% } %>
                     </div>
 
-                    <div class="product-preview-info">
+                    <div class="edit-product-preview-info">
                         <h3 id="previewName"><%= product.getProductName() %></h3>
                         <p id="previewDescription"><%= product.getDescription() != null ? product.getDescription() : "No description provided." %></p>
-                        <strong id="previewPrice">KES <%= String.format("%.2f", product.getPrice()) %></strong>
-                        <span id="previewStock">Stock: <%= product.getStockQuantity() %></span>
-                    </div>
-                </div>
 
-            </div>
+                        <div class="edit-product-preview-meta">
+                            <div>
+                                <span>Price</span>
+                                <strong id="previewPrice">KES <%= String.format("%.2f", product.getPrice()) %></strong>
+                            </div>
+
+                            <div>
+                                <span>Stock</span>
+                                <strong id="previewStock"><%= product.getStockQuantity() %> units</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="edit-product-help-card">
+                        <h3>Update tip</h3>
+                        <p>Use a clear product image and accurate stock count. This helps customers trust the catalogue.</p>
+                    </div>
+                </aside>
+
+            </section>
 
         </div>
 
     </main>
 
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="edit-product-bottom-nav">
+    <a href="adminDashboard.jsp">
+        <span>⌂</span>
+        Home
+    </a>
+
+    <a href="manageOrders.jsp">
+        <span>📦</span>
+        Orders
+    </a>
+
+    <a href="manageProducts.jsp" class="active">
+        <span>▣</span>
+        Products
+    </a>
+
+    <a href="addProduct.jsp">
+        <span>＋</span>
+        Add
+    </a>
+</nav>
 
 <script>
     const productName = document.getElementById("productName");
@@ -241,7 +340,7 @@
         previewName.innerText = productName.value || "Product name";
         previewDescription.innerText = description.value || "Product description will appear here.";
         previewPrice.innerText = "KES " + (price.value ? parseFloat(price.value).toFixed(2) : "0.00");
-        previewStock.innerText = "Stock: " + (quantity.value || "0");
+        previewStock.innerText = (quantity.value || "0") + " units";
     }
 
     productName.addEventListener("input", updatePreview);
@@ -262,6 +361,11 @@
     }
 
     function validateProductForm() {
+        if (productName.value.trim().length < 2) {
+            alert("Product name must be at least 2 characters.");
+            return false;
+        }
+
         if (parseFloat(price.value) <= 0) {
             alert("Price must be greater than zero.");
             return false;

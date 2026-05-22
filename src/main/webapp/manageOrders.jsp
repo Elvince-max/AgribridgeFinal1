@@ -36,21 +36,30 @@
 <head>
     <title>Manage Orders - Egerton AgriBridge Hub</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS order matters -->
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/base.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/components.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/manage-orders.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/responsive.css?v=1">
 </head>
 
-<body class="estate-dashboard-body">
+<body class="manage-orders-body">
 
-<div class="estate-layout">
+<div class="orders-admin-shell">
 
     <!-- SIDEBAR -->
-    <aside class="estate-sidebar">
-        <div class="estate-brand">
-            <h2>AgriBridge</h2>
-            <p>Modern Pastoral Management</p>
+    <aside class="orders-admin-sidebar">
+        <div class="orders-admin-brand">
+            <div class="orders-admin-brand-mark">🌿</div>
+            <div>
+                <h2>AgriBridge</h2>
+                <p>Admin Portal</p>
+            </div>
         </div>
 
-        <nav class="estate-menu">
+        <nav class="orders-admin-menu">
             <a href="adminDashboard.jsp">
                 <span>▦</span>
                 Dashboard
@@ -58,7 +67,7 @@
 
             <a href="manageProducts.jsp">
                 <span>▣</span>
-                Manage Products
+                Products
             </a>
 
             <a href="addProduct.jsp">
@@ -68,12 +77,12 @@
 
             <a href="manageOrders.jsp" class="active">
                 <span>▤</span>
-                Manage Orders
+                Orders
             </a>
 
             <a href="salesReport.jsp">
                 <span>▥</span>
-                Sales Reports
+                Reports
             </a>
 
             <a href="products.jsp">
@@ -82,70 +91,105 @@
             </a>
         </nav>
 
-        <div class="estate-sidebar-bottom">
-            <a class="estate-add-btn" href="addProduct.jsp">
-                ＋ Add New Product
-            </a>
+        <div class="orders-admin-sidebar-promo">
+            <h3>Order Control</h3>
+            <p>Review payment status, update order progress, and assign delivery agents.</p>
+            <a href="manageOrders.jsp?orderStatus=PENDING">Pending Orders</a>
+        </div>
 
-            <a href="logout" class="estate-logout">
+        <div class="orders-admin-sidebar-bottom">
+            <a href="logout" onclick="return confirm('Are you sure you want to logout?');">
                 ⎋ Logout
             </a>
         </div>
     </aside>
 
     <!-- MAIN -->
-    <main class="estate-main">
+    <main class="orders-admin-main">
 
-        <!-- TOP BAR -->
-        <header class="estate-topbar">
+        <!-- MOBILE TOP BAR -->
+        <header class="orders-mobile-topbar">
+            <a href="adminDashboard.jsp" aria-label="Dashboard">☰</a>
+            <strong>Orders</strong>
+            <div>
+                <a href="manageProducts.jsp" aria-label="Products">▣</a>
+                <a href="salesReport.jsp" aria-label="Reports">▥</a>
+            </div>
+        </header>
+
+        <!-- DESKTOP TOP BAR -->
+        <header class="orders-admin-topbar">
             <div>
                 <h1>Orders Management</h1>
                 <p>Review customer orders, payment status, delivery details, and assigned agents.</p>
             </div>
 
-            <div class="estate-top-actions">
-                <form action="manageOrders.jsp" method="get" class="estate-search">
+            <div class="orders-admin-top-actions">
+                <form action="manageOrders.jsp" method="get" class="orders-admin-search">
                     <span>⌕</span>
-                    <input type="text" name="search" placeholder="Search order/customer ID..."
+                    <input type="text"
+                           name="search"
+                           placeholder="Search order/customer ID..."
                            value="<%= hasSearch ? search : "" %>">
                 </form>
 
-                <a href="manageOrders.jsp" class="estate-icon-btn">🔔</a>
-                <a href="adminDashboard.jsp" class="estate-profile">👨‍💼</a>
+                <a href="manageOrders.jsp?orderStatus=PENDING"
+                   class="orders-admin-icon-btn"
+                   title="Pending Orders">
+                    🔔
+                </a>
+
+                <a href="adminDashboard.jsp"
+                   class="orders-admin-profile"
+                   title="Admin Dashboard">
+                    👨‍💼
+                </a>
             </div>
         </header>
 
-        <div class="admin-orders-page estate-inner-page">
+        <div class="orders-admin-content">
 
-            <div class="admin-orders-header">
+            <!-- HERO -->
+            <section class="orders-hero-card">
                 <div>
-                    <p class="eyebrow">STAFF ORDER CONTROL</p>
-                    <h1>Manage Orders</h1>
-                    <p>Search, filter, update order status, and assign delivery agents.</p>
+                    <p class="orders-eyebrow">STAFF ORDER CONTROL</p>
+                    <h2>Manage Orders</h2>
+                    <p>
+                        Search, filter, update order status, and assign delivery agents from one clean workspace.
+                    </p>
+
+                    <div class="orders-hero-actions">
+                        <a href="manageOrders.jsp?orderStatus=PENDING">Pending Orders</a>
+                        <a href="products.jsp">View Marketplace</a>
+                    </div>
                 </div>
 
-                <a class="btn" href="products.jsp">View Marketplace</a>
-            </div>
+                <div class="orders-hero-summary">
+                    <span>Filter Mode</span>
+                    <strong><%= (hasSearch || hasOrderStatusFilter || hasPaymentStatusFilter) ? "ON" : "OFF" %></strong>
+                    <small><%= (hasSearch || hasOrderStatusFilter || hasPaymentStatusFilter) ? "Showing selected records" : "Showing all orders" %></small>
+                </div>
+            </section>
 
             <%
                 if ("updated".equals(request.getParameter("status"))) {
             %>
-                <div class="review-success">Order status updated successfully.</div>
+                <div class="orders-success">Order status updated successfully.</div>
             <%
                 } else if ("assigned".equals(request.getParameter("status"))) {
             %>
-                <div class="review-success">Delivery agent assigned successfully.</div>
+                <div class="orders-success">Delivery agent assigned successfully.</div>
             <%
                 } else if ("error".equals(request.getParameter("status"))) {
             %>
-                <div class="review-error">Something went wrong. Please try again.</div>
+                <div class="orders-error">Something went wrong. Please try again.</div>
             <%
                 }
             %>
 
             <!-- SEARCH AND FILTER BAR -->
-            <div class="admin-order-search-card premium-filter-card">
-                <form method="get" action="manageOrders.jsp" class="admin-order-search-form">
+            <section class="orders-filter-card">
+                <form method="get" action="manageOrders.jsp" class="orders-filter-form">
 
                     <div>
                         <label>Search Order / Customer</label>
@@ -179,15 +223,15 @@
                         </select>
                     </div>
 
-                    <div class="admin-order-search-actions">
-                        <button class="btn" type="submit">Search</button>
-                        <a class="btn btn-secondary" href="manageOrders.jsp">Clear</a>
+                    <div class="orders-filter-actions">
+                        <button type="submit">Search</button>
+                        <a href="manageOrders.jsp">Clear</a>
                     </div>
 
                 </form>
-            </div>
+            </section>
 
-            <div class="admin-orders-card">
+            <section class="orders-list-card">
 
                 <%
                     Connection conn = null;
@@ -309,64 +353,64 @@
                                 paymentStatus = "PENDING";
                             }
 
-                            String paymentClass = paymentStatus.toLowerCase();
-                            String orderStatusClass = orderStatus.toLowerCase();
+                            String paymentClass = paymentStatus.toLowerCase().replace("_", "-");
+                            String orderStatusClass = orderStatus.toLowerCase().replace("_", "-");
                 %>
 
                     <% if (resultCount == 1 && (hasSearch || hasOrderStatusFilter || hasPaymentStatusFilter)) { %>
-                        <div class="admin-order-result-count">
+                        <div class="orders-result-count">
                             Showing filtered results
                         </div>
                     <% } %>
 
-                    <div class="admin-order-card premium-order-card">
+                    <article class="orders-card">
 
-                        <div class="admin-order-top">
+                        <div class="orders-card-top">
                             <div>
-                                <p class="delivery-eyebrow">ORDER RECORD</p>
+                                <p class="orders-small-label">ORDER RECORD</p>
                                 <h2>Order #<%= orderId %></h2>
                                 <p>Customer ID: <strong><%= customerId %></strong></p>
                                 <p>Placed: <%= orderDate != null ? orderDate : "Date unavailable" %></p>
                             </div>
 
-                            <div class="admin-order-total">
+                            <div class="orders-total">
                                 <span>Total</span>
                                 <strong>KES <%= String.format("%.2f", totalAmount) %></strong>
                             </div>
                         </div>
 
-                        <div class="admin-order-grid">
+                        <div class="orders-info-grid">
 
-                            <div class="admin-order-info">
+                            <div class="orders-info">
                                 <span>Payment Status</span>
-                                <strong class="status-pill <%= paymentClass %>">
+                                <strong class="orders-payment <%= paymentClass %>">
                                     <%= paymentStatus %>
                                 </strong>
                             </div>
 
-                            <div class="admin-order-info">
+                            <div class="orders-info">
                                 <span>Order Status</span>
-                                <strong class="estate-status <%= orderStatusClass %>">
+                                <strong class="orders-status <%= orderStatusClass %>">
                                     <%= orderStatus.replace("_", " ") %>
                                 </strong>
                             </div>
 
-                            <div class="admin-order-info">
+                            <div class="orders-info">
                                 <span>Delivery Status</span>
                                 <strong><%= deliveryStatus.replace("_", " ") %></strong>
                             </div>
 
-                            <div class="admin-order-info">
+                            <div class="orders-info">
                                 <span>Delivery Fee</span>
                                 <strong>KES <%= String.format("%.2f", deliveryFee) %></strong>
                             </div>
 
                         </div>
 
-                        <details class="premium-order-details">
+                        <details class="orders-details">
                             <summary>View fulfilment details</summary>
 
-                            <div class="admin-delivery-box premium-fulfilment-box">
+                            <div class="orders-fulfilment-box">
                                 <h3>Fulfilment Details</h3>
 
                                 <p><strong>Zone:</strong> <%= deliveryZone %></p>
@@ -379,9 +423,9 @@
                             </div>
                         </details>
 
-                        <div class="admin-order-actions">
+                        <div class="orders-actions">
 
-                            <form action="updateOrderStatus" method="post" class="admin-order-form">
+                            <form action="updateOrderStatus" method="post" class="orders-action-form">
                                 <input type="hidden" name="orderId" value="<%= orderId %>">
 
                                 <label>Update Order Status</label>
@@ -394,28 +438,28 @@
                                     <option value="CANCELLED" <%= "CANCELLED".equals(orderStatus) ? "selected" : "" %>>CANCELLED</option>
                                 </select>
 
-                                <button class="btn" type="submit">Update</button>
+                                <button type="submit">Update</button>
                             </form>
 
-                            <form action="assignDelivery" method="post" class="admin-order-form">
+                            <form action="assignDelivery" method="post" class="orders-action-form">
                                 <input type="hidden" name="orderId" value="<%= orderId %>">
 
                                 <label>Assign Delivery Agent</label>
                                 <input type="number" name="agentId" placeholder="Enter Agent ID" required>
 
-                                <button class="btn btn-secondary" type="submit">Assign</button>
+                                <button class="secondary" type="submit">Assign</button>
                             </form>
 
-                            <div class="admin-order-view">
+                            <div class="orders-view-box">
                                 <label>Customer View</label>
-                                <a class="btn" href="orderDetails.jsp?orderId=<%= orderId %>">
+                                <a href="orderDetails.jsp?orderId=<%= orderId %>">
                                     View Details
                                 </a>
                             </div>
 
                         </div>
 
-                    </div>
+                    </article>
 
                 <%
                         }
@@ -424,7 +468,7 @@
                         e.printStackTrace();
                 %>
 
-                    <div class="review-error">
+                    <div class="orders-error">
                         Could not load orders. Please confirm your orders/payments table column names.
                     </div>
 
@@ -438,8 +482,8 @@
                     if (!hasOrders) {
                 %>
 
-                    <div class="cart-empty-state">
-                        <div class="cart-empty-icon">🔍</div>
+                    <div class="orders-empty-state">
+                        <div>🔍</div>
                         <h2>No matching orders</h2>
                         <p>No orders match your current search or filter selection.</p>
                         <a href="manageOrders.jsp">Clear Filters</a>
@@ -449,13 +493,36 @@
                     }
                 %>
 
-            </div>
+            </section>
 
         </div>
 
     </main>
 
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="orders-admin-bottom-nav">
+    <a href="adminDashboard.jsp">
+        <span>⌂</span>
+        Home
+    </a>
+
+    <a href="manageOrders.jsp" class="active">
+        <span>📦</span>
+        Orders
+    </a>
+
+    <a href="manageProducts.jsp">
+        <span>▣</span>
+        Products
+    </a>
+
+    <a href="salesReport.jsp">
+        <span>▥</span>
+        Reports
+    </a>
+</nav>
 
 </body>
 </html>

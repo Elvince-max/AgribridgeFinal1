@@ -29,7 +29,13 @@
     for (Product p : allProducts) {
         totalProducts++;
 
-        if ("ACTIVE".equalsIgnoreCase(p.getStatus())) {
+        String currentStatus = p.getStatus();
+
+        if (currentStatus == null || currentStatus.trim().isEmpty()) {
+            currentStatus = "ACTIVE";
+        }
+
+        if ("ACTIVE".equalsIgnoreCase(currentStatus)) {
             activeProducts++;
         }
 
@@ -63,7 +69,7 @@
         }
 
         if (hasStatusFilter) {
-            matchesStatus = statusFilter.equalsIgnoreCase(p.getStatus());
+            matchesStatus = statusFilter.equalsIgnoreCase(currentStatus);
         }
 
         if (matchesSearch && matchesStock && matchesStatus) {
@@ -77,21 +83,30 @@
 <head>
     <title>Manage Products - Egerton AgriBridge Hub</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style-backup.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS order matters -->
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/base.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/components.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/manage-products.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/responsive.css?v=1">
 </head>
 
-<body class="estate-dashboard-body">
+<body class="manage-products-body">
 
-<div class="estate-layout">
+<div class="products-admin-shell">
 
     <!-- SIDEBAR -->
-    <aside class="estate-sidebar">
-        <div class="estate-brand">
-            <h2>AgriBridge</h2>
-            <p>Modern Pastoral Management</p>
+    <aside class="products-admin-sidebar">
+        <div class="products-admin-brand">
+            <div class="products-admin-brand-mark">🌿</div>
+            <div>
+                <h2>AgriBridge</h2>
+                <p>Admin Portal</p>
+            </div>
         </div>
 
-        <nav class="estate-menu">
+        <nav class="products-admin-menu">
             <a href="adminDashboard.jsp">
                 <span>▦</span>
                 Dashboard
@@ -99,7 +114,7 @@
 
             <a href="manageProducts.jsp" class="active">
                 <span>▣</span>
-                Manage Products
+                Products
             </a>
 
             <a href="addProduct.jsp">
@@ -109,12 +124,12 @@
 
             <a href="manageOrders.jsp">
                 <span>▤</span>
-                Manage Orders
+                Orders
             </a>
 
             <a href="salesReport.jsp">
                 <span>▥</span>
-                Sales Reports
+                Reports
             </a>
 
             <a href="products.jsp">
@@ -123,29 +138,41 @@
             </a>
         </nav>
 
-        <div class="estate-sidebar-bottom">
-            <a class="estate-add-btn" href="addProduct.jsp">
-                ＋ Add New Product
-            </a>
+        <div class="products-admin-sidebar-promo">
+            <h3>Inventory Control</h3>
+            <p>Keep product stock, prices, images, and marketplace visibility updated.</p>
+            <a href="addProduct.jsp">Add Product</a>
+        </div>
 
-            <a href="logout" class="estate-logout">
+        <div class="products-admin-sidebar-bottom">
+            <a href="logout" onclick="return confirm('Are you sure you want to logout?');">
                 ⎋ Logout
             </a>
         </div>
     </aside>
 
     <!-- MAIN -->
-    <main class="estate-main">
+    <main class="products-admin-main">
 
-        <!-- TOP BAR -->
-        <header class="estate-topbar">
+        <!-- MOBILE TOP BAR -->
+        <header class="products-mobile-topbar">
+            <a href="adminDashboard.jsp" aria-label="Dashboard">☰</a>
+            <strong>Products</strong>
+            <div>
+                <a href="addProduct.jsp" aria-label="Add Product">＋</a>
+                <a href="manageOrders.jsp" aria-label="Orders">📦</a>
+            </div>
+        </header>
+
+        <!-- DESKTOP TOP BAR -->
+        <header class="products-admin-topbar">
             <div>
                 <h1>Product Inventory</h1>
                 <p>Manage dairy products, stock levels, visibility, and catalogue availability.</p>
             </div>
 
-            <div class="estate-top-actions">
-                <form action="manageProducts.jsp" method="get" class="estate-search">
+            <div class="products-admin-top-actions">
+                <form action="manageProducts.jsp" method="get" class="products-admin-search">
                     <span>⌕</span>
                     <input type="text"
                            name="search"
@@ -153,52 +180,78 @@
                            value="<%= hasSearch ? search : "" %>">
                 </form>
 
-                <a href="manageProducts.jsp" class="estate-icon-btn">🔔</a>
-                <a href="adminDashboard.jsp" class="estate-profile">👨‍💼</a>
+                <a href="addProduct.jsp"
+                   class="products-admin-icon-btn"
+                   title="Add Product">
+                    ＋
+                </a>
+
+                <a href="adminDashboard.jsp"
+                   class="products-admin-profile"
+                   title="Admin Dashboard">
+                    👨‍💼
+                </a>
             </div>
         </header>
 
-        <div class="estate-inner-page">
+        <div class="products-admin-content">
 
-            <div class="admin-products-header">
+            <!-- HERO -->
+            <section class="products-hero-card">
                 <div>
-                    <p class="eyebrow">INVENTORY CONTROL</p>
-                    <h1>Manage Products</h1>
-                    <p>Track stock, edit product details, and control what customers see in the marketplace.</p>
+                    <p class="products-eyebrow">INVENTORY CONTROL</p>
+                    <h2>Manage Products</h2>
+                    <p>
+                        Track stock, edit product details, and control what customers see in the marketplace.
+                    </p>
+
+                    <div class="products-hero-actions">
+                        <a href="addProduct.jsp">Add New Product</a>
+                        <a href="products.jsp">View Public Catalog</a>
+                    </div>
                 </div>
 
-                <div class="admin-products-header-actions">
-                    <a class="btn" href="addProduct.jsp">Add New Product</a>
-                    <a class="btn btn-secondary" href="products.jsp">View Public Catalog</a>
-                </div>
-            </div>
-
-            <!-- PRODUCT STATS -->
-            <section class="admin-product-stats">
-                <div>
+                <div class="products-hero-summary">
                     <span>Total Products</span>
                     <strong><%= totalProducts %></strong>
+                    <small><%= activeProducts %> active products</small>
+                </div>
+            </section>
+
+            <!-- PRODUCT STATS -->
+            <section class="products-stats-grid">
+                <div class="products-stat-card">
+                    <div>▣</div>
+                    <span>Total Products</span>
+                    <h3><%= totalProducts %></h3>
+                    <p>All products in the database</p>
                 </div>
 
-                <div>
+                <div class="products-stat-card">
+                    <div>✅</div>
                     <span>Active Products</span>
-                    <strong><%= activeProducts %></strong>
+                    <h3><%= activeProducts %></h3>
+                    <p>Visible in marketplace</p>
                 </div>
 
-                <div>
+                <div class="products-stat-card warning">
+                    <div>⚠️</div>
                     <span>Low Stock</span>
-                    <strong><%= lowStockProducts %></strong>
+                    <h3><%= lowStockProducts %></h3>
+                    <p>Stock quantity between 1 and 5</p>
                 </div>
 
-                <div>
+                <div class="products-stat-card danger">
+                    <div>⛔</div>
                     <span>Out of Stock</span>
-                    <strong><%= outOfStockProducts %></strong>
+                    <h3><%= outOfStockProducts %></h3>
+                    <p>Products with zero stock</p>
                 </div>
             </section>
 
             <!-- SEARCH / FILTER -->
-            <div class="admin-order-search-card premium-filter-card">
-                <form method="get" action="manageProducts.jsp" class="admin-product-search-form">
+            <section class="products-filter-card">
+                <form method="get" action="manageProducts.jsp" class="products-filter-form">
 
                     <div>
                         <label>Search Product</label>
@@ -227,18 +280,18 @@
                         </select>
                     </div>
 
-                    <div class="admin-order-search-actions">
-                        <button class="btn" type="submit">Search</button>
-                        <a class="btn btn-secondary" href="manageProducts.jsp">Clear</a>
+                    <div class="products-filter-actions">
+                        <button type="submit">Search</button>
+                        <a href="manageProducts.jsp">Clear</a>
                     </div>
 
                 </form>
-            </div>
+            </section>
 
             <% if (products.isEmpty()) { %>
 
-                <div class="cart-empty-state">
-                    <div class="cart-empty-icon">🥛</div>
+                <div class="products-empty-state">
+                    <div>🥛</div>
                     <h2>No products found</h2>
                     <p>No products match your current search or filter selection.</p>
                     <a href="manageProducts.jsp">Clear Filters</a>
@@ -246,7 +299,7 @@
 
             <% } else { %>
 
-                <div class="admin-product-list">
+                <section class="products-list">
 
                     <%
                         for (Product p : products) {
@@ -273,25 +326,24 @@
                             String productStatusClass = "ACTIVE".equalsIgnoreCase(productStatus) ? "active" : "inactive";
                     %>
 
-                    <div class="admin-product-card">
+                    <article class="products-card">
 
-                        <div class="admin-product-image">
+                        <div class="products-image">
                             <% if (p.getImageUrl() != null && !p.getImageUrl().isEmpty()) { %>
                                 <img src="<%= request.getContextPath() + "/" + p.getImageUrl() %>"
-                                     alt="<%= p.getProductName() %>">
+                                     alt="<%= p.getProductName() %>"
+                                     loading="lazy">
                             <% } else { %>
-                                <div class="admin-product-no-image">No Image</div>
+                                <div class="products-no-image">No Image</div>
                             <% } %>
                         </div>
 
-                        <div class="admin-product-main">
-                            <div>
-                                <p class="delivery-eyebrow">PRODUCT #<%= p.getProductId() %></p>
-                                <h2><%= p.getProductName() %></h2>
-                                <p><%= p.getDescription() != null ? p.getDescription() : "No description provided." %></p>
-                            </div>
+                        <div class="products-main">
+                            <p class="products-small-label">PRODUCT #<%= p.getProductId() %></p>
+                            <h2><%= p.getProductName() %></h2>
+                            <p><%= p.getDescription() != null ? p.getDescription() : "No description provided." %></p>
 
-                            <div class="admin-product-meta">
+                            <div class="products-meta">
                                 <div>
                                     <span>Price</span>
                                     <strong>KES <%= String.format("%.2f", p.getPrice()) %></strong>
@@ -303,34 +355,33 @@
                                 </div>
 
                                 <div>
-                                    <span>Product Status</span>
-                                    <strong class="admin-product-status <%= productStatusClass %>">
+                                    <span>Status</span>
+                                    <strong class="products-status <%= productStatusClass %>">
                                         <%= productStatus %>
                                     </strong>
                                 </div>
 
                                 <div>
                                     <span>Stock Status</span>
-                                    <strong class="admin-stock-status <%= stockClass %>">
+                                    <strong class="products-stock <%= stockClass %>">
                                         <%= stockLabel %>
                                     </strong>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="admin-product-actions">
-                            <a class="btn" href="editProduct.jsp?id=<%= p.getProductId() %>">
+                        <div class="products-actions">
+                            <a href="editProduct.jsp?id=<%= p.getProductId() %>">
                                 Edit
                             </a>
 
                             <% if ("INACTIVE".equalsIgnoreCase(productStatus)) { %>
-                                <a class="btn"
-                                   href="activateProduct?id=<%= p.getProductId() %>"
+                                <a href="activateProduct?id=<%= p.getProductId() %>"
                                    onclick="return confirm('Activate this product? It will be visible to customers.');">
                                    Activate
                                 </a>
                             <% } else { %>
-                                <a class="btn btn-danger"
+                                <a class="danger"
                                    href="deleteProduct?id=<%= p.getProductId() %>"
                                    onclick="return confirm('Deactivate this product? It will be hidden from customers.');">
                                    Deactivate
@@ -338,13 +389,13 @@
                             <% } %>
                         </div>
 
-                    </div>
+                    </article>
 
                     <%
                         }
                     %>
 
-                </div>
+                </section>
 
             <% } %>
 
@@ -353,6 +404,29 @@
     </main>
 
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="products-admin-bottom-nav">
+    <a href="adminDashboard.jsp">
+        <span>⌂</span>
+        Home
+    </a>
+
+    <a href="manageOrders.jsp">
+        <span>📦</span>
+        Orders
+    </a>
+
+    <a href="manageProducts.jsp" class="active">
+        <span>▣</span>
+        Products
+    </a>
+
+    <a href="salesReport.jsp">
+        <span>▥</span>
+        Reports
+    </a>
+</nav>
 
 </body>
 </html>

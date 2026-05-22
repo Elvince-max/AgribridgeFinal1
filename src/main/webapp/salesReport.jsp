@@ -64,13 +64,6 @@
     try {
         conn = DBConnection.getConnection();
 
-        /*
-            DATE FILTER STRATEGY:
-            First tries created_at.
-            If your table does not have created_at, it tries order_date.
-            If both fail, it loads all-time report safely.
-        */
-
         boolean dateFilterApplied = false;
         String dateColumn = "";
 
@@ -113,7 +106,6 @@
             dateWhere = " WHERE DATE(" + dateColumn + ") BETWEEN ? AND ? ";
         }
 
-        // Total orders and sales
         String summarySql =
             "SELECT COUNT(*) AS total_orders, COALESCE(SUM(total_amount), 0) AS total_sales " +
             "FROM orders " + dateWhere;
@@ -139,7 +131,6 @@
             averageOrderValue = totalSales / totalOrders;
         }
 
-        // Order status counts
         String statusSql =
             "SELECT order_status, COUNT(*) AS total FROM orders " +
             dateWhere +
@@ -178,7 +169,6 @@
         rs.close();
         ps.close();
 
-        // Payment status counts
         try {
             String paymentSql =
                 "SELECT payment_status, COUNT(*) AS total FROM payments GROUP BY payment_status";
@@ -228,21 +218,30 @@
 <head>
     <title>Sales Reports - Egerton AgriBridge Hub</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS order matters -->
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/base.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/components.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/sales-report.css?v=1">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/responsive.css?v=1">
 </head>
 
-<body class="estate-dashboard-body">
+<body class="sales-report-body">
 
-<div class="estate-layout">
+<div class="sales-admin-shell">
 
     <!-- SIDEBAR -->
-    <aside class="estate-sidebar no-print">
-        <div class="estate-brand">
-            <h2>AgriBridge</h2>
-            <p>Modern Pastoral Management</p>
+    <aside class="sales-admin-sidebar no-print">
+        <div class="sales-admin-brand">
+            <div class="sales-admin-brand-mark">🌿</div>
+            <div>
+                <h2>AgriBridge</h2>
+                <p>Admin Portal</p>
+            </div>
         </div>
 
-        <nav class="estate-menu">
+        <nav class="sales-admin-menu">
             <a href="adminDashboard.jsp">
                 <span>▦</span>
                 Dashboard
@@ -250,7 +249,7 @@
 
             <a href="manageProducts.jsp">
                 <span>▣</span>
-                Manage Products
+                Products
             </a>
 
             <a href="addProduct.jsp">
@@ -260,12 +259,12 @@
 
             <a href="manageOrders.jsp">
                 <span>▤</span>
-                Manage Orders
+                Orders
             </a>
 
             <a href="salesReport.jsp" class="active">
                 <span>▥</span>
-                Sales Reports
+                Reports
             </a>
 
             <a href="products.jsp">
@@ -274,45 +273,69 @@
             </a>
         </nav>
 
-        <div class="estate-sidebar-bottom">
-            <a class="estate-add-btn" href="salesReport.jsp">
-                ⟳ Refresh Report
-            </a>
+        <div class="sales-admin-sidebar-promo">
+            <h3>Reports Center</h3>
+            <p>Analyze revenue, order performance, payments, and product contribution.</p>
+            <a href="salesReport.jsp">Refresh Report</a>
+        </div>
 
-            <a href="logout" class="estate-logout">
+        <div class="sales-admin-sidebar-bottom">
+            <a href="logout" onclick="return confirm('Are you sure you want to logout?');">
                 ⎋ Logout
             </a>
         </div>
     </aside>
 
     <!-- MAIN -->
-    <main class="estate-main">
+    <main class="sales-admin-main">
 
-        <!-- TOP BAR -->
-        <header class="estate-topbar no-print">
+        <!-- MOBILE TOP BAR -->
+        <header class="sales-mobile-topbar no-print">
+            <a href="adminDashboard.jsp" aria-label="Dashboard">☰</a>
+            <strong>Reports</strong>
+            <div>
+                <a href="manageOrders.jsp" aria-label="Orders">📦</a>
+                <a href="manageProducts.jsp" aria-label="Products">▣</a>
+            </div>
+        </header>
+
+        <!-- DESKTOP TOP BAR -->
+        <header class="sales-admin-topbar no-print">
             <div>
                 <h1>Sales Analytics</h1>
                 <p>Track revenue, order performance, payments, and product sales.</p>
             </div>
 
-            <div class="estate-top-actions">
-                <form action="manageOrders.jsp" method="get" class="estate-search">
+            <div class="sales-admin-top-actions">
+                <form action="manageOrders.jsp" method="get" class="sales-admin-search">
                     <span>⌕</span>
                     <input type="text" name="search" placeholder="Search transactions...">
                 </form>
 
-                <a href="manageOrders.jsp" class="estate-icon-btn">🔔</a>
-                <a href="adminDashboard.jsp" class="estate-profile">👨‍💼</a>
+                <a href="manageOrders.jsp"
+                   class="sales-admin-icon-btn"
+                   title="Orders">
+                    🔔
+                </a>
+
+                <a href="adminDashboard.jsp"
+                   class="sales-admin-profile"
+                   title="Admin Dashboard">
+                    👨‍💼
+                </a>
             </div>
         </header>
 
-        <div class="estate-inner-page" id="salesReportArea">
+        <div class="sales-admin-content" id="salesReportArea">
 
-            <div class="admin-products-header">
+            <!-- HERO -->
+            <section class="sales-hero-card">
                 <div>
-                    <p class="eyebrow">FINANCIAL REPORTING</p>
-                    <h1>Sales Reports</h1>
-                    <p>Analyze revenue, product performance, order status, and customer payment progress.</p>
+                    <p class="sales-eyebrow">FINANCIAL REPORTING</p>
+                    <h2>Sales Reports</h2>
+                    <p>
+                        Analyze revenue, product performance, order status, and customer payment progress.
+                    </p>
 
                     <% if (hasStartDate && hasEndDate && dateError == null) { %>
                         <p class="sales-date-range">
@@ -323,22 +346,28 @@
                             Report period: <strong>All-time</strong>
                         </p>
                     <% } %>
+
+                    <div class="sales-hero-actions no-print">
+                        <a href="manageOrders.jsp">View Orders</a>
+                        <a href="manageProducts.jsp">View Inventory</a>
+                    </div>
                 </div>
 
-                <div class="admin-products-header-actions no-print">
-                    <a class="btn" href="manageOrders.jsp">View Orders</a>
-                    <a class="btn btn-secondary" href="manageProducts.jsp">View Inventory</a>
+                <div class="sales-hero-summary">
+                    <span>Total Revenue</span>
+                    <strong>KES <%= String.format("%,.2f", totalSales) %></strong>
+                    <small><%= totalOrders %> recorded orders</small>
                 </div>
-            </div>
+            </section>
 
             <% if (dateError != null) { %>
-                <div class="review-error">
+                <div class="sales-error">
                     <%= dateError %>
                 </div>
             <% } %>
 
             <!-- FILTERS -->
-            <div class="sales-filter-card no-print">
+            <section class="sales-filter-card no-print">
                 <form method="get" action="salesReport.jsp" class="sales-filter-form" onsubmit="return validateSalesDates();">
                     <div>
                         <label>Start Date</label>
@@ -366,11 +395,11 @@
                     </div>
 
                     <div class="sales-filter-actions">
-                        <button class="btn" type="submit">Apply Filters</button>
-                        <a class="btn btn-secondary" href="salesReport.jsp">Clear</a>
+                        <button type="submit">Apply Filters</button>
+                        <a href="salesReport.jsp">Clear</a>
                     </div>
                 </form>
-            </div>
+            </section>
 
             <!-- EXPORT BUTTONS -->
             <div class="sales-export-actions no-print">
@@ -390,7 +419,7 @@
                     <div class="sales-stat-icon green">💵</div>
                     <span>Total Revenue</span>
                     <h2>KES <%= String.format("%,.2f", totalSales) %></h2>
-                    <small class="positive">Revenue from recorded orders</small>
+                    <small>Revenue from recorded orders</small>
                 </div>
 
                 <div class="sales-stat-card">
@@ -420,7 +449,7 @@
             <section class="sales-chart-grid">
 
                 <div class="sales-chart-card">
-                    <div class="estate-card-header">
+                    <div class="sales-card-header">
                         <div>
                             <h2>Order Status Performance</h2>
                             <p>
@@ -492,7 +521,7 @@
             <!-- PRODUCT SALES BREAKDOWN -->
             <section class="sales-breakdown-card">
 
-                <div class="estate-card-header">
+                <div class="sales-card-header">
                     <div>
                         <h2>Product Sales Breakdown</h2>
                         <p>Units sold and revenue generated per product.</p>
@@ -594,7 +623,7 @@
                             e.printStackTrace();
                     %>
 
-                        <div class="estate-empty-row">Could not load product breakdown.</div>
+                        <div class="sales-empty-row">Could not load product breakdown.</div>
 
                     <%
                         } finally {
@@ -605,7 +634,7 @@
                         if (!hasProductRows) {
                     %>
 
-                        <div class="estate-empty-row">No product sales data available.</div>
+                        <div class="sales-empty-row">No product sales data available.</div>
 
                     <%
                         }
@@ -620,6 +649,29 @@
     </main>
 
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="sales-admin-bottom-nav no-print">
+    <a href="adminDashboard.jsp">
+        <span>⌂</span>
+        Home
+    </a>
+
+    <a href="manageOrders.jsp">
+        <span>📦</span>
+        Orders
+    </a>
+
+    <a href="manageProducts.jsp">
+        <span>▣</span>
+        Products
+    </a>
+
+    <a href="salesReport.jsp" class="active">
+        <span>▥</span>
+        Reports
+    </a>
+</nav>
 
 <%
     if (conn != null) {
